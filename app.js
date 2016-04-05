@@ -3,28 +3,42 @@ var app = express();
 var pg = require('pg');
 var config = require('./config');
 
+//Set: Puerto
 app.set('port', (process.env.PORT || 3000));
 
 app.use(express.static(__dirname + '/public'));
 
-// views is directory for all template files
+// Set: Carpeta Views para las vistas de la api
 app.set('views', __dirname + '/views');
 //app.set('view engine', 'ejs');
 
+// Set: Motor de vistas, habilito para vistas html
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
+
+
+//------------- Rutas Api Rest -----------------//
 
 app.get('/', function(request, response) {
   //response.render('pages/index');
 	response.render('pages/main.html');
 });
 
+
+//----------------Fin Rutas---------------------//
+
+
+
+
+// Set: Conecto el puerto con la api
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
 
 pg.defaults.ssl = true;
 
+
+// Conexion a Base de Datos de Postgree hosteada en Heroku
 pg.connect(config.DATABASE_URL, function(err, client) {
   if (err) throw err;
   console.log('Conectado a Postgres');
