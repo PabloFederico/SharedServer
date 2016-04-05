@@ -19,9 +19,18 @@ app.set('view engine', 'ejs');
 
 //------------- Rutas Api Rest -----------------//
 
+/*Ruta base*/
 app.get('/', function(request, response) {
-  //response.render('pages/index');
+  	//response.render('pages/index');
 	response.render('pages/main.html');
+});
+
+/*GET usuarios*/
+app.get('/usuarios', function(request, response) {
+
+	var user_json = {"nombre":"heber","apellido":"gonzalez"};
+	response.send(JSON.stringify(user_json));
+	console.log(JSON.stringify(user_json));
 });
 
 
