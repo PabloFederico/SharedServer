@@ -83,6 +83,60 @@ app.post('/users', function(request, response) {
 });
 
 
+/* DELETE user*/
+app.delete('/users/:id', function(request,response) {
+
+	var results = [];
+	var id = request.params.id;
+	pg.connect(config.DATABASE_URL, function(err, client) {
+
+	client.query("DELETE FROM usuarios WHERE id = ($1)", [id]);
+
+	var query = client.query("SELECT * FROM usuarios ORDER BY id ASC");
+		query.on('row', function(row) {
+		results.push(row);
+	});
+
+	// After all data is returned, close connection and return results
+	query.on('end', function() {
+		return response.json(results);
+	});
+
+	});
+	
+});
+
+/*GET one user*/
+app.get('/users/:id', function(request, response) {
+
+	var id = request.params.id;
+
+	pg.connect(config.DATABASE_URL, function(err, client) {
+		var results = [];
+		var query = client.query("SELECT * FROM usuarios WHERE id = ($1)",[id]);
+
+		// Stream results back one row at a time
+		query.on('row', function(row) {
+		    results.push(row);
+		});
+
+		// After all data is returned, close connection and return results
+		query.on('end', function() {
+		    if (results.length == 0) 
+			{
+			 response.sendStatus(404);//NOT FOUND
+			}
+			else
+		    return response.json(results);
+		});
+		//response.send(JSON.stringify(user_json));
+		//console.log(JSON.stringify(user_json));
+	});
+});
+
+
+
+
 //--------------------------------------Fin Rutas----------------------------------------------------//
 
 
