@@ -3,6 +3,7 @@ var app = express();
 var pg = require('pg');
 var config = require('./config');
 var bodyParser = require('body-parser');
+var $ = jQuery = require('jquery')(window);
 
 //Set: Puerto
 app.set('port', (process.env.PORT || 3000));
@@ -10,6 +11,8 @@ app.set('port', (process.env.PORT || 3000));
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
