@@ -87,16 +87,15 @@ app.post('/users', function(request, response) {
 
 
 		var data = {nombre: request.body.nombre, alias: request.body.alias, email: request.body.email, lat: request.body.latitud, long: request.body.longitud};
-		client.query("INSERT INTO usuarios(name, email, alias, latitud, longitud) values($1, $2, $3, $4, $5)", [data.nombre, data.alias,data.email,data.lat,data.long]);
+		var query = client.query("INSERT INTO usuarios(name, email, alias, latitud, longitud) values($1, $2, $3, $4, $5)", [data.nombre, data.alias,data.email,data.lat,data.long]);
 
-		var query = client.query("SELECT * FROM usuarios ORDER BY id ASC");
-		 query.on('row', function(row) {
-		    results.push(row);
-		});
+		
 
 		// After all data is returned, close connection and return results
 		query.on('end', function() {
-		      return response.status(201);
+		      
+		      response.sendStatus(201);
+       		      response.end();
 		});
 	});
 });
@@ -110,7 +109,7 @@ app.delete('/users/:id', function(request,response) {
 	pg.connect(config.DATABASE_URL, function(err, client) {
 
 		client.query("DELETE FROM usuarios WHERE id = ($1)", [id]);
-		return response.status(200);
+		response.sendStatus(200);
 	});
 	
 });
