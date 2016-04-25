@@ -3,7 +3,6 @@ var app = express();
 var pg = require('pg');
 var config = require('./config');
 var bodyParser = require('body-parser');
-var $ = jQuery = require('jquery');
 
 //Set: Puerto
 app.set('port', (process.env.PORT || 3000));
