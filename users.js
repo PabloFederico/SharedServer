@@ -9,7 +9,13 @@ app.set('port', (process.env.PORT || 3000));
 
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));   
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});   
 
 // Set: Carpeta Views para las vistas de la api
 app.set('views', __dirname + '/views');
@@ -33,6 +39,11 @@ app.get('/form_newUser', function(request, response) {
 	response.render('pages/newUser.html');
 });
 
+/*FORM view User*/
+app.get('/form_viewUser', function(request, response) {
+	response.render('pages/viewUsers.html');
+});
+
 /*GET users*/
 app.get('/users', function(request, response) {
 
@@ -41,22 +52,29 @@ app.get('/users', function(request, response) {
 		var query = client.query("SELECT * FROM usuarios ORDER BY id ASC;");
 
 		// Stream results back one row at a time
-		query.on('row', function(row) {
-		    results.push(row);
+		query.on('row', function(row,result) {
+		    result.addRow(row);
 		});
 
 		// After all data is returned, close connection and return results
-		query.on('end', function() {
-		    if (results.length == 0) 
-			{
-			 console.log("nada");
-			 response.send("No hay nada en la tabla.");
-			}
-			else
-		    return response.json(results);
+		query.on('end', function(result) {
+		var jsonObject = { "users" : [] , metadata : { version : 0.1 , count : result.rowCount}}
+		      for (var i = 0; i < result.rowCount; i++) {
+			    var oneUser = {
+				user : {
+				name : result.rows[i].name,
+				alias : result.rows[i].alias,
+				email : result.rows[i].email,
+				location : {
+				  latitude : result.rows[i].latitud,
+				  longitude : result.rows[i].longitud
+				}
+			      }
+			    }
+			  jsonObject.users.push(oneUser);
+		      }
+		return response.json(jsonObject);
 		});
-		//response.send(JSON.stringify(user_json));
-		//console.log(JSON.stringify(user_json));
 	});
 });
 
@@ -77,7 +95,7 @@ app.post('/users', function(request, response) {
 
 		// After all data is returned, close connection and return results
 		query.on('end', function() {
-		    return response.json(results);
+		      return response.status(201);
 		});
 	});
 });
@@ -90,18 +108,8 @@ app.delete('/users/:id', function(request,response) {
 	var id = request.params.id;
 	pg.connect(config.DATABASE_URL, function(err, client) {
 
-	client.query("DELETE FROM usuarios WHERE id = ($1)", [id]);
-
-	var query = client.query("SELECT * FROM usuarios ORDER BY id ASC");
-		query.on('row', function(row) {
-		results.push(row);
-	});
-
-	// After all data is returned, close connection and return results
-	query.on('end', function() {
-		return response.json(results);
-	});
-
+		client.query("DELETE FROM usuarios WHERE id = ($1)", [id]);
+		return response.status(200);
 	});
 	
 });
@@ -116,21 +124,35 @@ app.get('/users/:id', function(request, response) {
 		var query = client.query("SELECT * FROM usuarios WHERE id = ($1)",[id]);
 
 		// Stream results back one row at a time
-		query.on('row', function(row) {
-		    results.push(row);
+		query.on('row', function(row,result) {
+		    result.addRow(row);
 		});
 
 		// After all data is returned, close connection and return results
-		query.on('end', function() {
-		    if (results.length == 0) 
-			{
-			 response.sendStatus(404);//NOT FOUND
-			}
-			else
-		    return response.json(results);
-		});
-		//response.send(JSON.stringify(user_json));
-		//console.log(JSON.stringify(user_json));
+		query.on('end', function(result) {
+		    if (result.rowCount){
+				 var jsonObject = {
+		   		    user : {
+		     		    id : id,
+		     		    name : result.rows[0].name,
+		     		    alias : result.rows[0].alias,
+		      		    email : result.rows[0].email,
+		      		      location : {
+		      		        latitude : result.rows[0].latitud,
+		       		        longitude : result.rows[0].longitud
+		     		      }
+		    		    },
+		    		  metadata : {
+		       	          version : 1.0
+		   	          }
+		 	         }
+ 		       return response.json(jsonObject);
+		    }
+		    else{
+			response.sendStatus(404);			
+		    }
+		   
+	       });		
 	});
 });
 
