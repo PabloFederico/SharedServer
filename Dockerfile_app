@@ -1,0 +1,20 @@
+FROM node:0.10
+
+ADD ./package.json /tmp/package.json
+RUN cd /tmp && npm install
+RUN mkdir -p /app && cp -a /tmp/node_modules /app/
+
+WORKDIR /app
+
+#ADD ./package.json /app/
+#RUN npm install
+
+ADD . /app
+
+VOLUME ["/logs"]
+
+EXPOSE 3000
+
+ENV NODE_ENV=container
+
+CMD ["node", "app.js"]

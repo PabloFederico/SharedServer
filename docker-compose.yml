@@ -1,0 +1,25 @@
+logs:
+    image: busybox
+    volumes:
+        - /data/logs:/logs:rw
+data:
+    image: busybox
+    volumes:
+        - /data/mongo:/data/db:rw
+mongo:
+    image: mongo:2.6
+    ports:
+        - "27017:27017"
+    volumes_from:
+        - data
+    command: --smallfiles
+app:
+    build: .
+    dockerfile: Dockerfile_app
+    links:
+        - mongo
+    ports:
+        - "3000:3000"
+    volumes_from:
+        - logs
+
