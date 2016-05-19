@@ -16,7 +16,7 @@ app.use(methodOverride());
 app.use(require('./middleware/cors'));
 
 // Set: Carpeta Views para las vistas de la api
-app.set('views', __dirname + '/views');
+app.set('views', __dirname + '/views/pages');
 
 // Set: Motor de vistas, habilito para vistas html
 app.engine('html', require('ejs').renderFile);
@@ -25,7 +25,7 @@ app.set('view engine', 'ejs');
 require('./routes')(app);
 
 app.get('/', function (request, response) {
-  response.render('pages/main.html');
+  response.render('main.html');
 });
 
 // Set: Conecto el puerto con la api
