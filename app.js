@@ -39,8 +39,7 @@ pg.defaults.ssl = true;
 pg.connect(config.DATABASE_URL, function (err, client) {
   if (err)
     throw err;
-  console.log('Creando tabla en caso de que no existe');
-  var query = client.query('CREATE TABLE IF NOT EXISTS usuarios(id SERIAL PRIMARY KEY, name VARCHAR(30), email VARCHAR(30), alias VARCHAR(20), latitud VARCHAR(30), longitud VARCHAR(30))');
+  var query = client.query('CREATE TABLE IF NOT EXISTS users(id SERIAL PRIMARY KEY, name VARCHAR(30), email VARCHAR(30), alias VARCHAR(20), interests VARCHAR(30), latitude VARCHAR(30), longitude VARCHAR(30))');
   query.on('end', function () {
     client.end();
   });

@@ -3,84 +3,84 @@
 <head>
 
 
-<style type="text/css">
-h1{
+	<style type="text/css">
+		h1{
 
-text-align:center;
-}
-table{
-text-align:center;
-width:50% !important;
-margin-left:25%!important;
-}
-</style>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
-
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-
-
-
-<script type="text/javascript">
-
-$(document).ready(function(){
-var midata = null;
- $.ajax({
-            url: "/users",
-            type: "GET",
-            contentType: 'application/json; charset=utf-8',
-            success: function(resultData) {
-                
-		for(var i=0; i< resultData.users.length; i++){
-		
-			var user = resultData.users[i];
-			var userJson = user.user;
-			var name = userJson.name;
-			var email = userJson.email;
-			var alias = userJson.alias;
-			var latitud = userJson.location.latitude;
-			var longitud = userJson.location.longitude;
-		$("#tabla").append('<tr><td>'+name+'</td><td>'+alias+'</td><td>'+email+'</td><td>'+latitud+'</td><td>'+longitud+'</td></tr>');
-
+			text-align:center;
 		}
+		table{
+			text-align:center;
+			width:50% !important;
+			margin-left:25%!important;
+		}
+	</style>
 
-            },
-            error : function(jqXHR, textStatus, errorThrown) {
-            },
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
-            timeout: 120000,
-        });
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
-});
-</script>
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+
+
+	<script type="text/javascript">
+
+		$(document).ready(function(){
+			var midata = null;
+			$.ajax({
+				url: "/users",
+				type: "GET",
+				contentType: 'application/json; charset=utf-8',
+				success: function(resultData) {
+
+					for (var i = 0; i < resultData.users.length; i++) {
+
+						var user = resultData.users[i];
+						var userJson = user.user;
+						var name = userJson.name;
+						var email = userJson.email;
+						var alias = userJson.alias;
+						var latitude = userJson.location.latitude;
+						var longitude = userJson.location.longitude;
+						$("#tabla").append('<tr><td>'+name+'</td><td>'+alias+'</td><td>'+email+'</td><td>'+latitude+'</td><td>'+longitude+'</td></tr>');
+
+					}
+
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+				},
+
+				timeout: 120000,
+			});
+
+		});
+	</script>
 
 </head>
 
 <body>
-<ol class="breadcrumb">
-  <li><a href="#">Home</a></li>
-  <li><a href="/form_newUser">Alta usuario</a></li>
-  <li class="active"><a href="/form_viewUser">Ver usuarios</a></li>
-</ol>
+	<ol class="breadcrumb">
+		<li><a href="#">Home</a></li>
+		<li><a href="/form_newUser">Alta usuario</a></li>
+		<li class="active"><a href="/form_viewUser">Ver usuarios</a></li>
+	</ol>
 
- <h1>Shared Server RestFull Api</h1>
-<hr>
-<table class="table table-striped" id="tabla">
-<tr>
-	<td>Nombre</td>
-	<td>Alias</td>
-	<td>Email</td>
-	<td>Latitud</td>
-	<td>Lngitud</td>	
-</tr>
+	<h1>Shared Server RestFul Api</h1>
+	<hr>
+	<table class="table table-striped" id="tabla">
+		<tr>
+			<td>Nombre</td>
+			<td>Alias</td>
+			<td>Email</td>
+			<td>Latitud</td>
+			<td>Longitud</td>	
+		</tr>
 
-</table>
+	</table>
 </body>
 </html>

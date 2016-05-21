@@ -12,7 +12,8 @@
     "ejs": "2.3.3",
     "express": "4.13.3",
     "method-override": "^2.3.5",
-    "pg": "4.5.1"
+    "pg": "4.5.1",
+    "underscore": "^1.8.3"
   },
   "engines": {
     "node": "0.12.7"
