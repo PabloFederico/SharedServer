@@ -8,9 +8,22 @@ exports = module.exports = function () {
   client.connect();
 }
 
-exports.signup = function (request, response) {
-  console.log(request.body);
-  response.sendStatus(200);
+function createUserFromResult(result) {
+  return {
+    user: {
+      id: id,
+      name: result.rows[0].name,
+      alias: result.rows[0].alias,
+      email: result.rows[0].email,
+      location: {
+        latitude: result.rows[0].latitude,
+        longitude: result.rows[0].longitude
+      }
+    },
+    metadata: {
+      version: 1.0
+    }
+  };
 }
 
 exports.login = function (request, response) {
@@ -29,41 +42,46 @@ exports.create = function (request, response) {
       longitude: request.body.longitude
     };
 
-    var query = client.query("INSERT INTO users(name, alias, email, interests, latitude, longitude) values($1, $2, $3, $4, $5, $6)", [data.name, data.alias, data.email, data.interests, data.latitude, data.longitude]);
-
-    // After all data is returned, close connection and return results
-    query.on('end', function () {
-      //response.sendStatus(201);
-      response.render("viewUsers.html");
-      response.end();
+    client.query("SELECT * FROM users WHERE alias = ($1)", [data.alias], function(err, result) {
+      if (result.rowCount) {
+        console.log('username already taken');
+        return response.json({code: 401, error: "username already taken"});
+      } else {
+        client.query("INSERT INTO users(name, alias, email, interests, latitude, longitude) values($1, $2, $3, $4, $5, $6)", [data.name, data.alias, data.email, data.interests, data.latitude, data.longitude], function(err, result) {
+          // After all data is returned, close connection and return results
+          response.render("viewUsers.html");
+          response.end();
+        });
+      }
     });
   });
 }
 
 exports.update = function (request, response) {
-  var updateQuery = "";
+  var updateQuery = [];
   var keys = _.keys(request.body);
 
   for (var i = 0; i < keys.length; i++) {
-    updateQuery.concat(keys[i] + " = " + request.body[keys[i]] + " ");
+    updateQuery[i] = " " + keys[i] + " = '" + request.body[keys[i]] + "'";
   }
+  updateQuery = updateQuery.join();
 
-  var query = client.query("UPDATE users set " + updateQuery + "WHERE id = ($1)", request.params.id);
-  response.sendStatus(200);
+  pg.connect(config.DATABASE_URL, function (err, client) {
+    client.query("UPDATE users SET" + updateQuery + " WHERE id = ($1)", [request.params.id]);
+    response.sendStatus(200);
+  });
 }
 
 exports.delete = function (request, response) {
-  var results = [];
-  var id = request.params.id;
-
-  client.query("DELETE FROM users WHERE id = ($1)", [id]);
-  response.sendStatus(200);
+  pg.connect(config.DATABASE_URL, function (err, client) {
+    client.query("DELETE FROM users WHERE id = ($1)", [request.params.id]);
+    response.sendStatus(200);
+  });
 };
 
 exports.get = function (request, response) {
   var id = request.params.id;
 
-  var results = [];
   var query = client.query("SELECT * FROM users WHERE id = ($1)", [id]);
 
   // Stream results back one row at a time
@@ -74,22 +92,7 @@ exports.get = function (request, response) {
   // After all data is returned, close connection and return results
   query.on('end', function (result) {
     if (result.rowCount) {
-      var jsonObject = {
-        user: {
-          id: id,
-          name: result.rows[0].name,
-          alias: result.rows[0].alias,
-          email: result.rows[0].email,
-          location: {
-            latitude: result.rows[0].latitude,
-            longitude: result.rows[0].longitude
-          }
-        },
-        metadata: {
-          version: 1.0
-        }
-      };
-      return response.json(jsonObject);
+      return response.json(createUserFromResult(result));
     } else {
       response.sendStatus(404);
     }
@@ -98,7 +101,6 @@ exports.get = function (request, response) {
 
 exports.getAll = function (request, response) {
   pg.connect(config.DATABASE_URL, function (err, client) {
-    var results = [];
     var query = client.query("SELECT * FROM users ORDER BY id ASC;");
 
     // Stream results back one row at a time
@@ -112,6 +114,7 @@ exports.getAll = function (request, response) {
       for (var i = 0; i < result.rowCount; i++) {
         var oneUser = {
           user: {
+            id: result.rows[i].id,
             name: result.rows[i].name,
             alias: result.rows[i].alias,
             email: result.rows[i].email,
@@ -127,6 +130,10 @@ exports.getAll = function (request, response) {
     });
   });
 };
+
+exports.getCandidate = function (request, response) {
+  response.sendStatus(200);
+}
 
 exports.form_newUser = function (request, response) {
   response.render('newUser.html');

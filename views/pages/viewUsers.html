@@ -42,12 +42,13 @@
 
 						var user = resultData.users[i];
 						var userJson = user.user;
+						var id = userJson.id;
 						var name = userJson.name;
 						var email = userJson.email;
 						var alias = userJson.alias;
 						var latitude = userJson.location.latitude;
 						var longitude = userJson.location.longitude;
-						$("#tabla").append('<tr><td>'+name+'</td><td>'+alias+'</td><td>'+email+'</td><td>'+latitude+'</td><td>'+longitude+'</td></tr>');
+						$("#tabla").append('<tr><td>'+id+'</td><td>'+name+'</td><td>'+alias+'</td><td>'+email+'</td><td>'+latitude+'</td><td>'+longitude+'</td></tr>');
 
 					}
 
@@ -74,6 +75,7 @@
 	<hr>
 	<table class="table table-striped" id="tabla">
 		<tr>
+			<td>Id</td>
 			<td>Nombre</td>
 			<td>Alias</td>
 			<td>Email</td>
