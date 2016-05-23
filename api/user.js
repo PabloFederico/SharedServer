@@ -63,7 +63,7 @@ exports.create = function (request, response) {
             console.log(err);
           }
           // After all data is returned, close connection and return results
-          response.render("viewUsers.html");
+          response.render('viewUsers.html');
           response.end();
         });
       }
@@ -87,29 +87,38 @@ exports.update = function (request, response) {
 }
 
 exports.delete = function (request, response) {
+  console.log(request.params.id);
   pg.connect(config.DATABASE_URL, function (err, client) {
-    client.query("DELETE FROM users WHERE id = ($1)", [request.params.id]);
-    response.sendStatus(200);
+    client.query("DELETE FROM users WHERE id = ($1)", [request.params.id], function(err, result) {
+      if (err) {
+        console.log(err);
+        response.sendStatus(500);
+      } else {
+        response.sendStatus(200);
+      }
+    });
   });
 };
 
 exports.get = function (request, response) {
   var id = request.params.id;
+  pg.connect(config.DATABASE_URL, function (err, client) {
 
-  var query = client.query("SELECT * FROM users WHERE id = ($1)", [id]);
+    var query = client.query("SELECT * FROM users WHERE id = ($1)", [id]);
 
-  // Stream results back one row at a time
-  query.on('row', function (row, result) {
-    result.addRow(row);
-  });
+    // Stream results back one row at a time
+    query.on('row', function (row, result) {
+      result.addRow(row);
+    });
 
-  // After all data is returned, close connection and return results
-  query.on('end', function (result) {
-    if (result.rowCount) {
-      return response.json(createUserFromResult(result));
-    } else {
-      response.sendStatus(404);
-    }
+    // After all data is returned, close connection and return results
+    query.on('end', function (result) {
+      if (result.rowCount) {
+        return response.json(createUserFromResult(result));
+      } else {
+        response.sendStatus(404);
+      }
+    });
   });
 };
 

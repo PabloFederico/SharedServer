@@ -1,8 +1,5 @@
 <html> 
-
 <head>
-
-
 	<style type="text/css">
 		h1{
 
@@ -26,8 +23,6 @@
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
-
-
 	<script type="text/javascript">
 
 		$(document).ready(function(){
@@ -37,9 +32,7 @@
 				type: "GET",
 				contentType: 'application/json; charset=utf-8',
 				success: function(resultData) {
-
 					for (var i = 0; i < resultData.users.length; i++) {
-
 						var user = resultData.users[i];
 						var userJson = user.user;
 						var id = userJson.id;
@@ -48,31 +41,35 @@
 						var alias = userJson.alias;
 						var latitude = userJson.location.latitude;
 						var longitude = userJson.location.longitude;
-						$("#tabla").append('<tr><td>'+id+'</td><td>'+name+'</td><td>'+alias+'</td><td>'+email+'</td><td>'+latitude+'</td><td>'+longitude+'</td></tr>');
-
+						$("#tabla").append('<tr><td>'+id+'</td><td>'+name+'</td><td>'+alias+'</td><td>'+email+'</td><td>'+latitude+'</td><td>'+longitude+'</td><td><button type="button" id="editar" class="btn btn-success">Editar</button></td><td><button type="button" id="eliminar" class="btn btn-warning">Eliminar</button></td></tr>');
 					}
-
+					$("#eliminar").click(function() {
+						var id = $(this).closest('tr').find('td').first().text();
+						$.ajax({
+							url: '/users/'+id,
+							type: 'DELETE',
+							success: function(result) {
+								alert("Usuario borrado satisfactoriamente");
+								location.reload();
+							}
+						});
+					});
 				},
 				error : function(jqXHR, textStatus, errorThrown) {
 				},
-
 				timeout: 120000,
 			});
-
-		});
-	</script>
-
+});
+</script>
 </head>
-
 <body>
 	<ol class="breadcrumb">
 		<li><a href="/">Home</a></li>
 		<li><a href="/form_newUser">Alta usuario</a></li>
 		<li class="active"><a href="/form_viewUser">Ver usuarios</a></li>
 		<li><a href="/form_newInterest">Alta interés</a></li>
-  	<li><a href="/form_viewInterests">Ver intereses</a></li>
+		<li><a href="/form_viewInterests">Ver intereses</a></li>
 	</ol>
-
 	<h1>Shared Server RestFul Api</h1>
 	<hr>
 	<table class="table table-striped" id="tabla">
@@ -84,7 +81,6 @@
 			<td>Latitud</td>
 			<td>Longitud</td>	
 		</tr>
-
 	</table>
 </body>
 </html>
