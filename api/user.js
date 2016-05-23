@@ -2,6 +2,7 @@
 var pg = require('pg');
 var _ = require('underscore');
 var config = require('../config');
+var utils = require('../utils');
 var client = new pg.Client(config.DATABASE_URL);
 
 exports = module.exports = function () {
@@ -27,15 +28,25 @@ function createUserFromResult(result) {
 }
 
 exports.login = function (request, response) {
-  console.log(request.body);
-  response.sendStatus(200);
+  request.app.passport.authenticate('local', function(err, user) {
+    if (err) {
+      return response.json({success: false, error: err.message });
+    }
+    if (!user) {
+      return response.json({success: false, error: "Invalid Login"});
+    }
+    return response.json(user);
+  });
 }
 
 exports.create = function (request, response) {
   pg.connect(config.DATABASE_URL, function (err, client) {
+    var encryptedPassword = utils.encryptPassword(request.body.password);
+    console.log(encryptedPassword);
     var data = {
       name: request.body.name,
       alias: request.body.alias,
+      password: encryptedPassword,
       email: request.body.email,
       interests: request.body.interests,
       latitude: request.body.latitude,
@@ -47,7 +58,10 @@ exports.create = function (request, response) {
         console.log('username already taken');
         return response.json({code: 401, error: "username already taken"});
       } else {
-        client.query("INSERT INTO users(name, alias, email, interests, latitude, longitude) values($1, $2, $3, $4, $5, $6)", [data.name, data.alias, data.email, data.interests, data.latitude, data.longitude], function(err, result) {
+        client.query("INSERT INTO users(name, alias, password, email, interests, latitude, longitude) values($1, $2, $3, $4, $5, $6, $7)", [data.name, data.alias, data.password, data.email, data.interests, data.latitude, data.longitude], function(err, result) {
+          if (err) {
+            console.log(err);
+          }
           // After all data is returned, close connection and return results
           response.render("viewUsers.html");
           response.end();
@@ -111,6 +125,7 @@ exports.getAll = function (request, response) {
     // After all data is returned, close connection and return results
     query.on('end', function (result) {
       var jsonObject = {"users": [], metadata: {version: 0.1, count: result.rowCount}};
+      console.log(result.rowCount);
       for (var i = 0; i < result.rowCount; i++) {
         var oneUser = {
           user: {
@@ -141,4 +156,12 @@ exports.form_newUser = function (request, response) {
 
 exports.form_viewUser = function (request, response) {
   response.render('viewUsers.html');
+};
+
+exports.form_newInterest = function (request, response) {
+  response.render('newInterest.html');
+};
+
+exports.form_viewInterests = function (request, response) {
+  response.render('viewInterests.html');
 };

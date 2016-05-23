@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var pg = require('pg');
 var config = require('./config');
+var passport = require('passport');
 var methodOverride = require('method-override');
 var bodyParser = require('body-parser');
 
@@ -14,6 +15,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(methodOverride());
 app.use(require('./middleware/cors'));
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Set: Carpeta Views para las vistas de la api
 app.set('views', __dirname + '/views/pages');
@@ -23,6 +26,9 @@ app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 
 require('./routes')(app);
+
+require('./passport')(app, passport);
+app.passport = passport;
 
 app.get('/', function (request, response) {
 	response.render('main.html');
@@ -39,7 +45,7 @@ pg.defaults.ssl = true;
 pg.connect(config.DATABASE_URL, function (err, client) {
 	if (err)
 		throw err;
-	client.query('CREATE TABLE IF NOT EXISTS users(id SERIAL PRIMARY KEY, name VARCHAR(30), email VARCHAR(30), alias VARCHAR(20), interests VARCHAR(30), latitude VARCHAR(30), longitude VARCHAR(30))', function(err, result) {
+	client.query('CREATE TABLE IF NOT EXISTS users(id SERIAL PRIMARY KEY, name VARCHAR(30), alias VARCHAR(20), password VARCHAR(300), email VARCHAR(30), interests VARCHAR(30), latitude VARCHAR(30), longitude VARCHAR(30))', function(err, result) {
 		if (err) {
 			console.log(err);
 			throw err;
@@ -52,7 +58,4 @@ pg.connect(config.DATABASE_URL, function (err, client) {
 			client.end();
 		});
 	});
-  // query.on('end', function () {
-  //   client.end();
-  // });
 });

@@ -35,6 +35,7 @@ exports.getAll = function (request, response) {
     	for (var i = 0; i < result.rowCount; i++) {
     		var oneInterest = {
     			interest: {
+            id: result.rows[i].id,
     				category: result.rows[i].category,
     				value: result.rows[i].value
     			}
