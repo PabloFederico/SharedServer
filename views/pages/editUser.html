@@ -61,6 +61,20 @@
 						}
 						
 					}
+					$("#boton").click(function(){
+					alert("asa");
+						$.ajax({
+						    type: 'PUT',
+						    dataType: 'json', 
+						    url: "users/"+id, 
+						    contentType: "application/json",
+data: '{"id":'+id+',"name":'+name+',"alias":'+alias+',"email":'+email+',"location":{'+
++'"latitude":'+latitude+',"longitude":'+longitude+'}}' 
+						});
+return false;
+					});
+
+					
 				},
 				error : function(jqXHR, textStatus, errorThrown) {
 				},
@@ -87,7 +101,7 @@
   <br>
   <br>
 
-  <form class="form-horizontal" action="/users" method="post">
+  <form class="form-horizontal">
     <div class="form-group">
       <label for="inputNombre" class="col-sm-2 control-label">Nombre</label>
       <div class="col-sm-10">
@@ -132,7 +146,7 @@
     </div>
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10">
-        <button type="submit" class="btn btn-default">Modificar Usuario</button>
+        <button id="boton" class="btn btn-default">Modificar Usuario</button>
       </div>
     </div>
   </form>
