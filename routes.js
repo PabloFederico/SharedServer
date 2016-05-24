@@ -13,6 +13,7 @@ exports = module.exports = function(app) {
 	//app.post('/profiles', require('./api/profile').getProfiles);
 	app.get('/form_newUser', require('./api/user').form_newUser);
 	app.get('/form_viewUser', require('./api/user').form_viewUser);
+	app.get('/form_editUser', require('./api/user').form_editUser);
 	app.get('/form_newInterest', require('./api/user').form_newInterest);
 	app.get('/form_viewInterests', require('./api/user').form_viewInterests);
 };

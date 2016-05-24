@@ -54,6 +54,13 @@
 							}
 						});
 					});
+
+					$("#editar").click(function() {
+						var id = $(this).closest('tr').find('td').first().text();
+						window.location.href = '/form_editUser?='+id;
+					});
+					
+
 				},
 				error : function(jqXHR, textStatus, errorThrown) {
 				},

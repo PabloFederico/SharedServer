@@ -167,6 +167,10 @@ exports.form_viewUser = function (request, response) {
   response.render('viewUsers.html');
 };
 
+exports.form_editUser = function (request, response) {
+  response.render('editUser.html');
+};
+
 exports.form_newInterest = function (request, response) {
   response.render('newInterest.html');
 };
