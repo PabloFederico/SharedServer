@@ -26,6 +26,12 @@
 	<script type="text/javascript">
 
 		$(document).ready(function(){
+					$("#editar").on("click",function() {
+						alert("editar");
+					})
+					$("#eliminar").on("click",function() {
+						alert("eliminar");						
+					})
 			var midata = null;
 			$.ajax({
 				url: "/users",
@@ -41,32 +47,37 @@
 						var alias = userJson.alias;
 						var latitude = userJson.location.latitude;
 						var longitude = userJson.location.longitude;
-						$("#tabla").append('<tr><td>'+id+'</td><td>'+name+'</td><td>'+alias+'</td><td>'+email+'</td><td>'+latitude+'</td><td>'+longitude+'</td><td><button type="button" id="editar" class="btn btn-success">Editar</button></td><td><button type="button" id="eliminar" class="btn btn-warning">Eliminar</button></td></tr>');
-					}
-					$("#eliminar").click(function() {
-						var id = $(this).closest('tr').find('td').first().text();
-						$.ajax({
-							url: '/users/'+id,
-							type: 'DELETE',
-							success: function(result) {
-								alert("Usuario borrado satisfactoriamente");
-								location.reload();
-							}
-						});
-					});
-
-					$("#editar").click(function() {
-						var id = $(this).closest('tr').find('td').first().text();
-						window.location.href = '/form_editUser?='+id;
-					});
-					
+						$("#tabla").append('<tr><td>'+id+'</td><td>'+name+'</td><td>'+alias+'</td><td>'+email+'</td><td>'+latitude+'</td><td>'+longitude+'</td><td><button type="button" id="editar" class="btn btn-success" onclick="toEdit(\''+id+'\')">Editar</button></td><td><button type="button" id="eliminar" class="btn btn-warning" onclick="toDelete(\''+id+'\')">Eliminar</button></td></tr>');
+					}				
 
 				},
 				error : function(jqXHR, textStatus, errorThrown) {
 				},
 				timeout: 120000,
 			});
+					
 });
+					
+
+function toEdit(id){
+	window.location.href = '/form_editUser?='+id;
+}
+
+function toDelete(id){
+
+	$.ajax({
+		url: '/users/'+id,
+		type: 'DELETE',
+		success: function(result) {
+			alert("Usuario borrado satisfactoriamente");
+			location.reload();
+		}
+	});
+}
+
+
+
+
 </script>
 </head>
 <body>

@@ -45,12 +45,12 @@ pg.defaults.ssl = true;
 pg.connect(config.DATABASE_URL, function (err, client) {
 	if (err)
 		throw err;
-	client.query("DROP TABLE IF EXISTS users", function(err, result) {
+	/*client.query("DROP TABLE IF EXISTS users", function(err, result) {
 		if (err) {
 			console.log(err);
 			throw err;
-		}
-		client.query('CREATE TABLE IF NOT EXISTS users(id SERIAL PRIMARY KEY, name VARCHAR(30), alias VARCHAR(20), password VARCHAR(300), email VARCHAR(30), interests VARCHAR(30), latitude VARCHAR(30), longitude VARCHAR(30))', function(err, result) {
+		}*/
+		client.query('CREATE TABLE IF NOT EXISTS users(id SERIAL PRIMARY KEY, name VARCHAR(30), alias VARCHAR(20), password VARCHAR(300), email VARCHAR(30), interests VARCHAR(200), latitude VARCHAR(30), longitude VARCHAR(30))', function(err, result) {
 			if (err) {
 				console.log(err);
 				throw err;
@@ -63,5 +63,5 @@ pg.connect(config.DATABASE_URL, function (err, client) {
 				client.end();
 			});
 		});
-	});
+	//});
 });
