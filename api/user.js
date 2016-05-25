@@ -16,6 +16,7 @@ function createUserFromResult(result) {
       name: result.rows[0].name,
       alias: result.rows[0].alias,
       email: result.rows[0].email,
+       photo_profile:'base_64',
       interests:result.rows[0].interests,
       location: {
         latitude: result.rows[0].latitude,
@@ -143,6 +144,7 @@ exports.getAll = function (request, response) {
             name: result.rows[i].name,
             alias: result.rows[i].alias,
             email: result.rows[i].email,
+	    photo_profile:'http://server/users/id/photo',
 	    interests:result.rows[i].interests,
             location: {
               latitude: result.rows[i].latitude,
