@@ -1,8 +1,7 @@
-<html> 
+<html>
 <head>
 	<style type="text/css">
 		h1{
-
 			text-align:center;
 		}
 		table{
@@ -24,14 +23,13 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
 	<script type="text/javascript">
-
-		$(document).ready(function(){
-					$("#editar").on("click",function() {
-						alert("editar");
-					})
-					$("#eliminar").on("click",function() {
-						alert("eliminar");						
-					})
+		$(document).ready(function() {
+			$("#editar").on("click",function() {
+				alert("editar");
+			})
+			$("#eliminar").on("click",function() {
+				alert("eliminar");						
+			})
 			var midata = null;
 			$.ajax({
 				url: "/users",
@@ -50,35 +48,26 @@
 						var longitude = userJson.location.longitude;
 						$("#tabla").append('<tr><td>'+id+'</td><td>'+name+'</td><td>'+alias+'</td><td>'+email+'</td><td>'+latitude+'</td><td>'+longitude+'</td><td>'+interests+'</td><td><button type="button" id="editar" class="btn btn-success" onclick="toEdit(\''+id+'\')">Editar</button></td><td><button type="button" id="eliminar" class="btn btn-warning" onclick="toDelete(\''+id+'\')">Eliminar</button></td></tr>');
 					}				
-
 				},
 				error : function(jqXHR, textStatus, errorThrown) {
 				},
 				timeout: 120000,
 			});
-					
-});
-					
+		});
 
-function toEdit(id){
-	window.location.href = '/form_editUser?='+id;
-}
+		function toEdit(id) {
+			window.location.href = '/form_editUser?='+id;
+		}
 
-function toDelete(id){
-
-	$.ajax({
-		url: '/users/'+id,
-		type: 'DELETE',
-		
-	});
-alert("Usuario borrado satisfactoriamente");
-			window.location.href = "/";
-}
-
-
-
-
-</script>
+		function toDelete(id) {
+			$.ajax({
+				url: '/users/'+id,
+				type: 'DELETE'
+			});
+			alert("Usuario borrado satisfactoriamente");
+			window.location.href = "/form_viewUser";
+		}
+	</script>
 </head>
 <body>
 	<ol class="breadcrumb">

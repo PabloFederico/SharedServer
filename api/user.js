@@ -41,7 +41,7 @@ exports.create = function (request, response) {
     var encryptedPassword = utils.encryptPassword(request.body.password);
     var data = {
       name: request.body.name,
-      alias: request.body.alias,
+      alias: request.body.username,
       password: encryptedPassword,
       email: request.body.email,
       interests: request.body.interests,
@@ -52,7 +52,7 @@ exports.create = function (request, response) {
     client.query("SELECT * FROM users WHERE alias = ($1)", [data.alias], function(err, result) {
       if (result.rowCount) {
         console.log('username already taken');
-        return response.json({code: 401, error: "username already taken"});
+        return response.json({code: 400, error: "username already taken"});
       } else {
         client.query("INSERT INTO users(name, alias, password, email, interests, latitude, longitude) values($1, $2, $3, $4, $5, $6, $7)", [data.name, data.alias, data.password, data.email, data.interests, data.latitude, data.longitude], function(err, result) {
           if (err) {
@@ -82,7 +82,6 @@ exports.update = function (request, response) {
 };
 
 exports.delete = function (request, response) {
-  console.log(request.params.id);
   pg.connect(config.DATABASE_URL, function (err, client) {
     client.query("DELETE FROM users WHERE id = ($1)", [request.params.id], function(err, result) {
       if (err) {
@@ -129,7 +128,6 @@ exports.getAll = function (request, response) {
     // After all data is returned, close connection and return results
     query.on('end', function (result) {
       var jsonObject = {"users": [], metadata: {version: 0.1, count: result.rowCount}};
-      console.log(result.rowCount);
       for (var i = 0; i < result.rowCount; i++) {
         var oneUser = {
           user: {

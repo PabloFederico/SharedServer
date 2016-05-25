@@ -2,7 +2,6 @@
 <head>
   <style type="text/css">
     form{
-
       width:50% !important;
       margin-left:25% !important;
     }
@@ -27,38 +26,29 @@
   <!-- Latest compiled and minified JavaScript -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
-<script type="text/javascript">
-
-		$(document).ready(function(){
-			var midata = null;
-			$.ajax({
-				url: "/interests",
-				type: "GET",
-				contentType: 'application/json; charset=utf-8',
-				success: function(resultData) {
-
-					for (var i = 0; i < resultData.interests.length; i++) {
-
-						var interest = resultData.interests[i];
-						var interestJson = interest.interest;
-						var id = interestJson.id;
-						var category = interestJson.category;
-						var value = interestJson.value;
-						$("#inputInterest").append('<option>'+category+'-'+value+'</option>');
-					}
-				},
-				error : function(jqXHR, textStatus, errorThrown) {
-				},
-
-				timeout: 120000,
-			});
-
-		});
-	</script>
-
-
-
-
+  <script type="text/javascript">
+    $(document).ready(function(){
+      var midata = null;
+      $.ajax({
+        url: "/interests",
+        type: "GET",
+        contentType: 'application/json; charset=utf-8',
+        success: function(resultData) {
+          for (var i = 0; i < resultData.interests.length; i++) {
+            var interest = resultData.interests[i];
+            var interestJson = interest.interest;
+            var id = interestJson.id;
+            var category = interestJson.category;
+            var value = interestJson.value;
+            $("#inputInterest").append('<option>'+category+'-'+value+'</option>');
+          }
+        },
+        error : function(jqXHR, textStatus, errorThrown) {
+        },
+        timeout: 120000,
+      });
+    });
+  </script>
 </head>
 
 <body>
@@ -75,7 +65,7 @@
   <br>
   <br>
 
-  <form class="form-horizontal" action="/users" method="post">
+  <form class="form-horizontal" action="/users" method="post" onsubmit="window.location.href = '/form_viewUser'; return false;">
     <div class="form-group">
       <label for="inputNombre" class="col-sm-2 control-label">Nombre</label>
       <div class="col-sm-10">
@@ -107,37 +97,37 @@
         <input type="text" class="form-control" id="inputInterest" placeholder="Interest" name="interests">
       </div>
     </div>
-    -->
-    <div class="form-group">
-      <label for="inputInterest" class="col-sm-2 control-label">Interests</label>
-      <div class="col-sm-10">
-        <select class="form-control" id="inputInterest" name="interests" multiple></select>
-      </div>
+  -->
+  <div class="form-group">
+    <label for="inputInterest" class="col-sm-2 control-label">Interests</label>
+    <div class="col-sm-10">
+      <select class="form-control" id="inputInterest" name="interests" multiple></select>
     </div>
-    
-    <div class="form-group">
-      <label for="inputEmail" class="col-sm-2 control-label">Latitud</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" id="inputLatit" placeholder="Latitud" name="latitude">
-      </div>
+  </div>
+
+  <div class="form-group">
+    <label for="inputEmail" class="col-sm-2 control-label">Latitud</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="inputLatit" placeholder="Latitud" name="latitude">
     </div>
-    <div class="form-group">
-      <label for="inputEmail" class="col-sm-2 control-label">Longitud</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" id="inputLongi" placeholder="Longitud" name="longitude">
-      </div>
+  </div>
+  <div class="form-group">
+    <label for="inputEmail" class="col-sm-2 control-label">Longitud</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="inputLongi" placeholder="Longitud" name="longitude">
     </div>
-    <div class="form-group">
-      <label for="inputfile" class="col-sm-2 control-label">Imagen</label>
-      <div class="col-sm-10">
-        <input type="file" class="form-control" id="inputfile" placeholder="file" name="file">
-      </div>
+  </div>
+  <div class="form-group">
+    <label for="inputfile" class="col-sm-2 control-label">Imagen</label>
+    <div class="col-sm-10">
+      <input type="file" class="form-control" id="inputfile" placeholder="file" name="file">
     </div>
-    <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
-        <button type="submit" class="btn btn-default">Alta Usuario</button>
-      </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-default">Alta Usuario</button>
     </div>
-  </form>
+  </div>
+</form>
 </body>
 </html>
