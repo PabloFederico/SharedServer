@@ -142,6 +142,7 @@ exports.getAll = function (request, response) {
             name: result.rows[i].name,
             alias: result.rows[i].alias,
             email: result.rows[i].email,
+	    interests:result.rows[i].interests,
             location: {
               latitude: result.rows[i].latitude,
               longitude: result.rows[i].longitude

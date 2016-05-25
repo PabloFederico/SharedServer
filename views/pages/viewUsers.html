@@ -45,9 +45,10 @@
 						var name = userJson.name;
 						var email = userJson.email;
 						var alias = userJson.alias;
+						var interests = userJson.interests;
 						var latitude = userJson.location.latitude;
 						var longitude = userJson.location.longitude;
-						$("#tabla").append('<tr><td>'+id+'</td><td>'+name+'</td><td>'+alias+'</td><td>'+email+'</td><td>'+latitude+'</td><td>'+longitude+'</td><td><button type="button" id="editar" class="btn btn-success" onclick="toEdit(\''+id+'\')">Editar</button></td><td><button type="button" id="eliminar" class="btn btn-warning" onclick="toDelete(\''+id+'\')">Eliminar</button></td></tr>');
+						$("#tabla").append('<tr><td>'+id+'</td><td>'+name+'</td><td>'+alias+'</td><td>'+email+'</td><td>'+latitude+'</td><td>'+longitude+'</td><td>'+interests+'</td><td><button type="button" id="editar" class="btn btn-success" onclick="toEdit(\''+id+'\')">Editar</button></td><td><button type="button" id="eliminar" class="btn btn-warning" onclick="toDelete(\''+id+'\')">Eliminar</button></td></tr>');
 					}				
 
 				},
@@ -97,7 +98,8 @@ function toDelete(id){
 			<td>Alias</td>
 			<td>Email</td>
 			<td>Latitud</td>
-			<td>Longitud</td>	
+			<td>Longitud</td>
+			<td>Intereses</td>	
 		</tr>
 	</table>
 </body>
