@@ -69,11 +69,10 @@ function toDelete(id){
 	$.ajax({
 		url: '/users/'+id,
 		type: 'DELETE',
-		success: function(result) {
-			alert("Usuario borrado satisfactoriamente");
-			location.reload();
-		}
+		
 	});
+alert("Usuario borrado satisfactoriamente");
+			window.location.href = "/";
 }
 
 
