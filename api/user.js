@@ -12,10 +12,11 @@ exports = module.exports = function () {
 function createUserFromResult(result) {
   return {
     user: {
-      id: id,
+      id: result.rows[0].id,
       name: result.rows[0].name,
       alias: result.rows[0].alias,
       email: result.rows[0].email,
+      interests:result.rows[0].interests,
       location: {
         latitude: result.rows[0].latitude,
         longitude: result.rows[0].longitude
