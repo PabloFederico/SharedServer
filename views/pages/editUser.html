@@ -28,7 +28,7 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
 	<script type="text/javascript">
-
+var id_global = null;
 		$(document).ready(function(){
 			var midata = null;
 			var user_id = window.location.href;
@@ -56,31 +56,33 @@
 						$("#inputAlias").val(alias);
 						$("#inputLatit").val(latitude);
 						$("#inputLongi").val(longitude);
-
+						id_global = id;
 						break;
 						}
 						
 					}
-					$("#boton").click(function(){
-					alert("asa");
-						$.ajax({
-						    type: 'PUT',
-						    dataType: 'json', 
-						    url: "users/"+id, 
-						    contentType: "application/json",
-data: '{"id":'+id+',"name":'+name+',"alias":'+alias+',"email":'+email+',"location":{'+
-+'"latitude":'+latitude+',"longitude":'+longitude+'}}' 
-						});
-return false;
-					});
-
-					
+							
 				},
 				error : function(jqXHR, textStatus, errorThrown) {
 				},
 				timeout: 120000,
 			});
 });
+
+
+function edit(){
+
+var modifyData = [$("#inputNombre").val(),$("#inputAlias").val(),$("#inputPassword").val(),$("#inputEmail").val(),$("#inputLatit").val(),$("#inputLongi").val()];
+$.ajax({
+ type: 'PUT',
+ dataType: 'json', 
+ url: "users/"+id_global, 
+ data: "name="+modifyData[0]+"&alias="+modifyData[1]+"&password="+modifyData[2]+"&email="+modifyData[3]+"&latitude="+modifyData[4]+"&longitude="+modifyData[5]+""
+});
+alert("Usuario modificado satisfactoriamente");
+window.location.href = "/";				
+}
+
 </script>
 
 
@@ -146,9 +148,10 @@ return false;
     </div>
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10">
-        <button id="boton" class="btn btn-default">Modificar Usuario</button>
+       <!-- <button id="as" class="btn btn-default" onclick="edit()">Modificar Usuario</button>-->
       </div>
     </div>
   </form>
+<button id="as" class="btn btn-default" style="margin-left:45%;"onclick="edit()">Modificar Usuario</button>
 </body>
 </html>
