@@ -9,7 +9,6 @@ exports = module.exports = function(app, passport) {
 
   passport.use(new LocalStrategy(
     function(username, password, done) {
-
       pg.connect(config.DATABASE_URL, function (err, client) {
         client.query("SELECT * FROM users WHERE alias = ($1)", [username], function(err, result) {
           if (err) {
@@ -29,4 +28,21 @@ exports = module.exports = function(app, passport) {
       });
     }
   ));
+
+  passport.serializeUser(function(user, done) {
+    done(null, user.id);
+  });
+
+  passport.deserializeUser(function(id, done) {
+    pg.connect(config.DATABASE_URL, function (err, client) {
+      client.query("SELECT * FROM users WHERE id = ($1)", [id], function(err, result) {
+        if (err) {
+          return done(err);
+        }
+        else {
+          done(err, user);
+        }
+      });
+    });
+  });
 };

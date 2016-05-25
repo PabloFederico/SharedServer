@@ -7,7 +7,7 @@ var client = new pg.Client(config.DATABASE_URL);
 
 exports = module.exports = function () {
   client.connect();
-}
+};
 
 function createUserFromResult(result) {
   return {
@@ -16,7 +16,7 @@ function createUserFromResult(result) {
       name: result.rows[0].name,
       alias: result.rows[0].alias,
       email: result.rows[0].email,
-       photo_profile:'base_64',
+      photo_profile:'base_64',
       interests:result.rows[0].interests,
       location: {
         latitude: result.rows[0].latitude,
@@ -30,21 +30,15 @@ function createUserFromResult(result) {
 }
 
 exports.login = function (request, response) {
-  request.app.passport.authenticate('local', function(err, user) {
-    if (err) {
-      return response.json({success: false, error: err.message });
-    }
-    if (!user) {
-      return response.json({success: false, error: "Invalid Login"});
-    }
-    return response.json(user);
-  });
-}
+  if (!request.user) {
+    return response.json({success: false, error: "Invalid Login"});
+  }
+  return response.json(request.user);
+};
 
 exports.create = function (request, response) {
   pg.connect(config.DATABASE_URL, function (err, client) {
     var encryptedPassword = utils.encryptPassword(request.body.password);
-    console.log(encryptedPassword);
     var data = {
       name: request.body.name,
       alias: request.body.alias,
@@ -65,13 +59,12 @@ exports.create = function (request, response) {
             console.log(err);
           }
           // After all data is returned, close connection and return results
-          response.render('viewUsers.html');
-          response.end();
+          return response.json({code: 200, error: "signup successfully"});
         });
       }
     });
   });
-}
+};
 
 exports.update = function (request, response) {
   var updateQuery = [];
@@ -86,7 +79,7 @@ exports.update = function (request, response) {
     client.query("UPDATE users SET" + updateQuery + " WHERE id = ($1)", [request.params.id]);
     response.sendStatus(200);
   });
-}
+};
 
 exports.delete = function (request, response) {
   console.log(request.params.id);
@@ -144,8 +137,8 @@ exports.getAll = function (request, response) {
             name: result.rows[i].name,
             alias: result.rows[i].alias,
             email: result.rows[i].email,
-	    photo_profile:'http://server/users/id/photo',
-	    interests:result.rows[i].interests,
+            photo_profile:'http://server/users/id/photo',
+            interests:result.rows[i].interests,
             location: {
               latitude: result.rows[i].latitude,
               longitude: result.rows[i].longitude
@@ -161,7 +154,7 @@ exports.getAll = function (request, response) {
 
 exports.getCandidate = function (request, response) {
   response.sendStatus(200);
-}
+};
 
 exports.form_newUser = function (request, response) {
   response.render('newUser.html');

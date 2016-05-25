@@ -1,7 +1,11 @@
 'use strict';
 
+function authenticateAndRun(app){
+  return app.passport.authenticate('local');
+}
+
 exports = module.exports = function(app) {
-	app.post('/login', require('./api/user').login);
+	app.post('/login', authenticateAndRun(app), require('./api/user').login);
 	app.get('/users/:id', require('./api/user').get);
 	app.get('/users', require('./api/user').getAll);
 	app.post('/users', require('./api/user').create);
