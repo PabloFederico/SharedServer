@@ -26,6 +26,39 @@
 
   <!-- Latest compiled and minified JavaScript -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+
+		$(document).ready(function(){
+			var midata = null;
+			$.ajax({
+				url: "/interests",
+				type: "GET",
+				contentType: 'application/json; charset=utf-8',
+				success: function(resultData) {
+
+					for (var i = 0; i < resultData.interests.length; i++) {
+
+						var interest = resultData.interests[i];
+						var interestJson = interest.interest;
+						var id = interestJson.id;
+						var category = interestJson.category;
+						var value = interestJson.value;
+						$("#inputInterest").append('<option>'+category+'-'+value+'</option>');
+					}
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+				},
+
+				timeout: 120000,
+			});
+
+		});
+	</script>
+
+
+
+
 </head>
 
 <body>
@@ -78,7 +111,7 @@
     <div class="form-group">
       <label for="inputInterest" class="col-sm-2 control-label">Interests</label>
       <div class="col-sm-10">
-        <select class="form-control" id="inputInterest" name="interests" multiple><option>opt1</option><option>opt2</option></select>
+        <select class="form-control" id="inputInterest" name="interests" multiple></select>
       </div>
     </div>
     
