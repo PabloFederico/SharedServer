@@ -56,8 +56,6 @@ exports.create = function (request, response) {
       } else {
         client.query("INSERT INTO users(name, alias, password, email, interests, latitude, longitude) values($1, $2, $3, $4, $5, $6, $7)", [data.name, data.alias, data.password, data.email, data.interests, data.latitude, data.longitude]
           , function (err) {
-
-            console.log("Client:" + client);
             done();
             if (err) {
               console.log(err);
