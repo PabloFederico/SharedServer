@@ -37,7 +37,7 @@ exports.login = function (request, response) {
 };
 
 exports.create = function (request, response) {
-  pg.connect(config.DATABASE_URL, function (err, client) {
+  pg.connect(config.DATABASE_URL, function (err, client, done) {
     var encryptedPassword = utils.encryptPassword(request.body.password);
     var data = {
       name: request.body.name,
@@ -56,12 +56,14 @@ exports.create = function (request, response) {
       } else {
         client.query("INSERT INTO users(name, alias, password, email, interests, latitude, longitude) values($1, $2, $3, $4, $5, $6, $7)", [data.name, data.alias, data.password, data.email, data.interests, data.latitude, data.longitude]
           , function (err) {
-            client.end();
+
+            console.log("Client:" + client);
+            done();
             if (err) {
               console.log(err);
             }
             // After all data is returned, close connection and return results
-            return response.json({code: 200, error: "signup successfully"});
+            return response.json({code: 200, message: "Signup successfully"});
           });
       }
     });
@@ -77,9 +79,9 @@ exports.update = function (request, response) {
   }
   updateQuery = updateQuery.join();
 
-  pg.connect(config.DATABASE_URL, function (err, client) {
+  pg.connect(config.DATABASE_URL, function (err, client, done) {
     client.query("UPDATE users SET" + updateQuery + " WHERE id = ($1)", [request.params.id], function (result) {
-      client.end();
+      done();
       if (result.rowCount) {
         response.sendStatus(200);
       } else {
@@ -90,9 +92,9 @@ exports.update = function (request, response) {
 };
 
 exports.delete = function (request, response) {
-  pg.connect(config.DATABASE_URL, function (err, client) {
+  pg.connect(config.DATABASE_URL, function (err, client, done) {
     client.query("DELETE FROM users WHERE id = ($1)", [request.params.id], function (err) {
-      client.end();
+      done();
       if (err) {
         console.log(err);
         response.sendStatus(500);
@@ -105,7 +107,7 @@ exports.delete = function (request, response) {
 
 exports.get = function (request, response) {
   var id = request.params.id;
-  pg.connect(config.DATABASE_URL, function (err, client) {
+  pg.connect(config.DATABASE_URL, function (err, client, done) {
 
     var query = client.query("SELECT * FROM users WHERE id = ($1)", [id]);
 
@@ -116,7 +118,7 @@ exports.get = function (request, response) {
 
     // After all data is returned, close connection and return results
     query.on('end', function (result) {
-      client.end();
+      done();
       if (result.rowCount) {
         return response.json(createUserFromResult(result));
       } else {
@@ -127,7 +129,7 @@ exports.get = function (request, response) {
 };
 
 exports.getAll = function (request, response) {
-  pg.connect(config.DATABASE_URL, function (err, client) {
+  pg.connect(config.DATABASE_URL, function (err, client, done) {
     var query = client.query("SELECT * FROM users ORDER BY id ASC;");
 
     // Stream results back one row at a time
@@ -137,7 +139,7 @@ exports.getAll = function (request, response) {
 
     // After all data is returned, close connection and return results
     query.on('end', function (result) {
-      client.end();
+      done();
       var jsonObject = {"users": [], metadata: {version: 0.1, count: result.rowCount}};
       for (var i = 0; i < result.rowCount; i++) {
         var oneUser = {

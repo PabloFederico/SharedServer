@@ -3,7 +3,7 @@ var pg = require('pg');
 var config = require('../config');
 
 exports.create = function (request, response) {
-	pg.connect(config.DATABASE_URL, function (err, client) {
+	pg.connect(config.DATABASE_URL, function (err, client,done) {
     var data = {
       category: request.body.category,
       value: request.body.value
@@ -13,7 +13,7 @@ exports.create = function (request, response) {
 
     // After all data is returned, close connection and return results
     query.on('end', function () {
-      client.end();
+      done();
       response.render("viewInterests.html");
       response.end();
     });
@@ -21,7 +21,7 @@ exports.create = function (request, response) {
 }
 
 exports.getAll = function (request, response) {
-	pg.connect(config.DATABASE_URL, function (err, client) {
+	pg.connect(config.DATABASE_URL, function (err, client,done) {
 		var query = client.query("SELECT * FROM interests ORDER BY id ASC;");
 
     // Stream results back one row at a time
@@ -31,7 +31,7 @@ exports.getAll = function (request, response) {
 
     // After all data is returned, close connection and return results
     query.on('end', function (result) {
-      client.end();
+      done();
     	var jsonObject = {"interests": [], metadata: {version: 0.1, count: result.rowCount}};
     	for (var i = 0; i < result.rowCount; i++) {
     		var oneInterest = {

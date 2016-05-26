@@ -42,7 +42,7 @@ app.listen(app.get('port'), function () {
 pg.defaults.ssl = true;
 
 //Creo la tabla de la base de datos //
-pg.connect(config.DATABASE_URL, function (err, client) {
+pg.connect(config.DATABASE_URL, function (err, client,done) {
 	if (err)
 		throw err;
 	client.query("DROP TABLE IF EXISTS users", function(err, result) {
@@ -60,7 +60,7 @@ pg.connect(config.DATABASE_URL, function (err, client) {
 					console.log(err);
 					throw err;
 				}
-				client.end();
+				done();
 			});
 		});
 	});
