@@ -9,9 +9,9 @@ exports = module.exports = function(app, passport) {
 
   passport.use(new LocalStrategy(
     function(username, password, done) {
-      pg.connect(config.DATABASE_URL, function (err, client,done) {
+      pg.connect(config.DATABASE_URL, function (err, client,pgDone) {
         client.query("SELECT * FROM users WHERE alias = ($1)", [username], function(err, result) {
-          done();
+          pgDone();
           if (err) {
             return done(err);
           }
@@ -35,8 +35,9 @@ exports = module.exports = function(app, passport) {
   });
 
   passport.deserializeUser(function(id, done) {
-    pg.connect(config.DATABASE_URL, function (err, client) {
+    pg.connect(config.DATABASE_URL, function (err, client,pgDone) {
       client.query("SELECT * FROM users WHERE id = ($1)", [id], function(err, result) {
+        pgDone();
         if (err) {
           return done(err);
         }
