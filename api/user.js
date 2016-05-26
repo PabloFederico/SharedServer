@@ -52,7 +52,7 @@ exports.create = function (request, response) {
     client.query("SELECT * FROM users WHERE alias = ($1)", [data.alias], function (err, result) {
       if (result.rowCount) {
         console.log('username already taken');
-        return response.json({code: 400, error: "username already taken"});
+        return response.status(400).json({error: "username already taken"});
       } else {
         client.query("INSERT INTO users(name, alias, password, email, interests, latitude, longitude) values($1, $2, $3, $4, $5, $6, $7)", [data.name, data.alias, data.password, data.email, data.interests, data.latitude, data.longitude]
           , function (err) {
@@ -61,7 +61,7 @@ exports.create = function (request, response) {
               console.log(err);
             }
             // After all data is returned, close connection and return results
-            return response.json({code: 200, message: "Signup successfully"});
+            return response.status(200).json({message: "Signup successfully"});
           });
       }
     });
