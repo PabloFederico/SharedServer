@@ -16,8 +16,8 @@ function createUserFromResult(result) {
       name: result.rows[0].name,
       alias: result.rows[0].alias,
       email: result.rows[0].email,
-      photo_profile:'base_64',
-      interests:result.rows[0].interests,
+      photo_profile: 'base_64',
+      interests: result.rows[0].interests,
       location: {
         latitude: result.rows[0].latitude,
         longitude: result.rows[0].longitude
@@ -49,18 +49,20 @@ exports.create = function (request, response) {
       longitude: request.body.longitude
     };
 
-    client.query("SELECT * FROM users WHERE alias = ($1)", [data.alias], function(err, result) {
+    client.query("SELECT * FROM users WHERE alias = ($1)", [data.alias], function (err, result) {
       if (result.rowCount) {
         console.log('username already taken');
         return response.json({code: 400, error: "username already taken"});
       } else {
-        client.query("INSERT INTO users(name, alias, password, email, interests, latitude, longitude) values($1, $2, $3, $4, $5, $6, $7)", [data.name, data.alias, data.password, data.email, data.interests, data.latitude, data.longitude], function(err, result) {
-          if (err) {
-            console.log(err);
-          }
-          // After all data is returned, close connection and return results
-          return response.json({code: 200, error: "signup successfully"});
-        });
+        client.query("INSERT INTO users(name, alias, password, email, interests, latitude, longitude) values($1, $2, $3, $4, $5, $6, $7)", [data.name, data.alias, data.password, data.email, data.interests, data.latitude, data.longitude]
+          , function (err) {
+            client.end();
+            if (err) {
+              console.log(err);
+            }
+            // After all data is returned, close connection and return results
+            return response.json({code: 200, error: "signup successfully"});
+          });
       }
     });
   });
@@ -76,14 +78,21 @@ exports.update = function (request, response) {
   updateQuery = updateQuery.join();
 
   pg.connect(config.DATABASE_URL, function (err, client) {
-    client.query("UPDATE users SET" + updateQuery + " WHERE id = ($1)", [request.params.id]);
-    response.sendStatus(200);
+    client.query("UPDATE users SET" + updateQuery + " WHERE id = ($1)", [request.params.id], function (result) {
+      client.end();
+      if (result.rowCount) {
+        response.sendStatus(200);
+      } else {
+        response.sendStatus(500);
+      }
+    });
   });
 };
 
 exports.delete = function (request, response) {
   pg.connect(config.DATABASE_URL, function (err, client) {
-    client.query("DELETE FROM users WHERE id = ($1)", [request.params.id], function(err, result) {
+    client.query("DELETE FROM users WHERE id = ($1)", [request.params.id], function (err) {
+      client.end();
       if (err) {
         console.log(err);
         response.sendStatus(500);
@@ -107,10 +116,11 @@ exports.get = function (request, response) {
 
     // After all data is returned, close connection and return results
     query.on('end', function (result) {
+      client.end();
       if (result.rowCount) {
         return response.json(createUserFromResult(result));
       } else {
-        response.sendStatus(404);
+        response.sendStatus(500);
       }
     });
   });
@@ -127,6 +137,7 @@ exports.getAll = function (request, response) {
 
     // After all data is returned, close connection and return results
     query.on('end', function (result) {
+      client.end();
       var jsonObject = {"users": [], metadata: {version: 0.1, count: result.rowCount}};
       for (var i = 0; i < result.rowCount; i++) {
         var oneUser = {
@@ -135,8 +146,8 @@ exports.getAll = function (request, response) {
             name: result.rows[i].name,
             alias: result.rows[i].alias,
             email: result.rows[i].email,
-            photo_profile:'http://server/users/id/photo',
-            interests:result.rows[i].interests,
+            photo_profile: 'http://server/users/id/photo',
+            interests: result.rows[i].interests,
             location: {
               latitude: result.rows[i].latitude,
               longitude: result.rows[i].longitude

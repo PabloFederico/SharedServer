@@ -13,7 +13,7 @@ exports.create = function (request, response) {
 
     // After all data is returned, close connection and return results
     query.on('end', function () {
-      //response.sendStatus(201);
+      client.end();
       response.render("viewInterests.html");
       response.end();
     });
@@ -31,6 +31,7 @@ exports.getAll = function (request, response) {
 
     // After all data is returned, close connection and return results
     query.on('end', function (result) {
+      client.end();
     	var jsonObject = {"interests": [], metadata: {version: 0.1, count: result.rowCount}};
     	for (var i = 0; i < result.rowCount; i++) {
     		var oneInterest = {
