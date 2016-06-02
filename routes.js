@@ -13,6 +13,7 @@ exports = module.exports = function(app) {
 	app.delete('/users/:id', require('./api/user').delete);
 	app.get('/interests', require('./api/interest').getAll);
 	app.post('/interests', require('./api/interest').create);
+        app.delete('/interests/:id', require('./api/interest').delete);
 	app.get('/candidate', require('./api/user').getCandidate);
 	//app.post('/profiles', require('./api/profile').getProfiles);
 	app.get('/form_newUser', require('./api/user').form_newUser);

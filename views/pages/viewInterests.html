@@ -45,7 +45,7 @@
 						var id = interestJson.id;
 						var category = interestJson.category;
 						var value = interestJson.value;
-						$("#tabla").append('<tr><td>'+id+'</td><td>'+category+'</td><td>'+value+'</td></tr>');
+						$("#tabla").append('<tr><td>'+id+'</td><td>'+category+'</td><td>'+value+'</td><td><button type="button" id="eliminar" class="btn btn-warning" onclick="toDelete(\''+id+'\')">Eliminar</button></td></tr>');
 					}
 				},
 				error : function(jqXHR, textStatus, errorThrown) {
@@ -55,6 +55,15 @@
 			});
 
 		});
+
+function toDelete(id) {
+			$.ajax({
+				url: '/interests/'+id,
+				type: 'DELETE'
+			});
+			alert("Interes borrado satisfactoriamente");
+			window.location.href = "/";
+		}
 	</script>
 
 </head>
