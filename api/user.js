@@ -16,6 +16,8 @@ function createUserFromResult(result) {
       name: result.rows[0].name,
       alias: result.rows[0].alias,
       email: result.rows[0].email,
+      sex: result.rows[0].sex,
+      age: result.rows[0].age,
       photo_profile: 'base_64',
       interests: result.rows[0].interests,
       location: {
@@ -45,6 +47,8 @@ exports.create = function (request, response) {
       password: encryptedPassword,
       email: request.body.email,
       interests: request.body.interests,
+      sex: request.body.sex,
+      age: request.body.age,
       latitude: request.body.latitude,
       longitude: request.body.longitude
     };
@@ -54,7 +58,7 @@ exports.create = function (request, response) {
         console.log('username already taken');
         return response.status(400).json({error: "username already taken"});
       } else {
-        client.query("INSERT INTO users(name, alias, password, email, interests, latitude, longitude) values($1, $2, $3, $4, $5, $6, $7)", [data.name, data.alias, data.password, data.email, data.interests, data.latitude, data.longitude]
+        client.query("INSERT INTO users(name, alias, password, email, interests, sex, age, latitude, longitude) values($1, $2, $3, $4, $5, $6, $7, $8, $9)", [data.name, data.alias, data.password, data.email, data.interests, data.sex, data.age, data.latitude, data.longitude]
           , function (err) {
             done();
             if (err) {
@@ -79,12 +83,12 @@ exports.update = function (request, response) {
 
   pg.connect(config.DATABASE_URL, function (err, client, done) {
     client.query("UPDATE users SET" + updateQuery + " WHERE id = ($1)", [request.params.id], function (result) {
-      done();
-      if (result.rowCount) {
+      //done();
+     // if (result.rowCount) {
         response.sendStatus(200);
-      } else {
-        response.sendStatus(500);
-      }
+      //} else {
+        //response.sendStatus(500);
+      //}
     });
   });
 };
@@ -92,7 +96,7 @@ exports.update = function (request, response) {
 exports.delete = function (request, response) {
   pg.connect(config.DATABASE_URL, function (err, client, done) {
     client.query("DELETE FROM users WHERE id = ($1)", [request.params.id], function (err) {
-      done();
+      //done();
       if (err) {
         console.log(err);
         response.sendStatus(500);
@@ -146,6 +150,8 @@ exports.getAll = function (request, response) {
             name: result.rows[i].name,
             alias: result.rows[i].alias,
             email: result.rows[i].email,
+            sex: result.rows[i].sex,
+            age: result.rows[i].age,
             photo_profile: 'http://server/users/id/photo',
             interests: result.rows[i].interests,
             location: {

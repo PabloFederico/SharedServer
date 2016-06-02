@@ -50,7 +50,7 @@ pg.connect(config.DATABASE_URL, function (err, client,done) {
 			console.log(err);
 			throw err;
 		}
-		client.query('CREATE TABLE IF NOT EXISTS users(id SERIAL PRIMARY KEY, name VARCHAR(30), alias VARCHAR(20), password VARCHAR(300), email VARCHAR(30), interests VARCHAR(30), latitude VARCHAR(30), longitude VARCHAR(30))', function(err, result) {
+		client.query('CREATE TABLE IF NOT EXISTS users(id SERIAL PRIMARY KEY, name VARCHAR(30), alias VARCHAR(20), password VARCHAR(300), email VARCHAR(30), interests VARCHAR(100), sex VARCHAR(4), age VARCHAR(10), latitude VARCHAR(30), longitude VARCHAR(30))', function(err, result) {
 			if (err) {
 				console.log(err);
 				throw err;
