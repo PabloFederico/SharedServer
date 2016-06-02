@@ -27,6 +27,7 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
   <script type="text/javascript">
+    var interests = null;
     var id_global = null;
     $(document).ready(function(){
      var midata = null;
@@ -46,6 +47,7 @@
           var email = userJson.email;
 	  var sexo = userJson.sex;
 	  var edad = userJson.age;
+	  interests = userJson.interests;
           var alias = userJson.alias;
           var latitude = userJson.location.latitude;
           var longitude = userJson.location.longitude;
@@ -67,16 +69,42 @@
       },
       timeout: 120000,
     });
-   });
+
+  $.ajax({
+        url: "/interests",
+        type: "GET",
+        contentType: 'application/json; charset=utf-8',
+        success: function(resultData) {
+          for (var i = 0; i < resultData.interests.length; i++) {
+            var interest = resultData.interests[i];
+            var interestJson = interest.interest;
+            var id = interestJson.id;
+            var category = interestJson.category;
+            var value = interestJson.value;
+            var complete = category+'-'+value;
+
+		    if(interests.indexOf(complete) ==  -1){
+		   	 $("#inputInterest").append('<option>'+complete+'</option>');}
+		    else{
+		    $("#inputInterest").append('<option selected>'+complete+'</option>');
+ 		    }
+          }
+        },
+        error : function(jqXHR, textStatus, errorThrown) {
+        },
+        timeout: 120000,
+      });
+
+  });
 
 
 function edit(){
-  var modifyData = [$("#inputNombre").val(),$("#inputAlias").val(),$("#inputPassword").val(),$("#inputEmail").val(),$("#inputLatit").val(),$("#inputLongi").val(),$("#inputAge").val(),$("#inputSex").val()];
+  var modifyData = [$("#inputNombre").val(),$("#inputAlias").val(),$("#inputPassword").val(),$("#inputEmail").val(),$("#inputLatit").val(),$("#inputLongi").val(),$("#inputAge").val(),$("#inputSex").val(), $("#inputInterest").val()];
   $.ajax({
    type: 'PUT',
    dataType: 'json', 
    url: "users/"+id_global, 
-   data: "name="+modifyData[0]+"&alias="+modifyData[1]+"&password="+modifyData[2]+"&age="+modifyData[6]+"&email="+modifyData[3]+"&latitude="+modifyData[4]+"&longitude="+modifyData[5]+"&sex="+modifyData[7]+""
+   data: "name="+modifyData[0]+"&alias="+modifyData[1]+"&password="+modifyData[2]+"&age="+modifyData[6]+"&email="+modifyData[3]+"&latitude="+modifyData[4]+"&longitude="+modifyData[5]+"&sex="+modifyData[7]+"&interests="+modifyData[8]+""
  });
   alert("Usuario modificado satisfactoriamente");
   window.location.href = "/";
@@ -143,11 +171,11 @@ function edit(){
       </div>
     </div>
     <div class="form-group">
-      <label for="inputEmail" class="col-sm-2 control-label">Interests</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" id="inputInterest" placeholder="Interest" name="interests">
-      </div>
+    <label for="inputInterest" class="col-sm-2 control-label">Interests</label>
+    <div class="col-sm-10">
+      <select class="form-control" id="inputInterest" name="interests" multiple></select>
     </div>
+  </div>
     <div class="form-group">
       <label for="inputEmail" class="col-sm-2 control-label">Latitud</label>
       <div class="col-sm-10">
