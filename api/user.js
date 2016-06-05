@@ -3,11 +3,6 @@ var pg = require('pg');
 var _ = require('underscore');
 var config = require('../config');
 var utils = require('../utils');
-var client = new pg.Client(config.DATABASE_URL);
-
-exports = module.exports = function () {
-  client.connect();
-};
 
 function createUserFromResult(result) {
   return {
@@ -40,6 +35,7 @@ exports.login = function (request, response) {
 
 exports.create = function (request, response) {
   pg.connect(config.DATABASE_URL, function (err, client, done) {
+    console.log(request.body.interests);
     var encryptedPassword = utils.encryptPassword(request.body.password);
     var data = {
       name: request.body.name,
@@ -83,9 +79,9 @@ exports.update = function (request, response) {
 
   pg.connect(config.DATABASE_URL, function (err, client, done) {
     client.query("UPDATE users SET" + updateQuery + " WHERE id = ($1)", [request.params.id], function (result) {
-      //done();
+      done();
      // if (result.rowCount) {
-        response.sendStatus(200);
+      response.sendStatus(200);
       //} else {
         //response.sendStatus(500);
       //}
@@ -96,7 +92,7 @@ exports.update = function (request, response) {
 exports.delete = function (request, response) {
   pg.connect(config.DATABASE_URL, function (err, client, done) {
     client.query("DELETE FROM users WHERE id = ($1)", [request.params.id], function (err) {
-      //done();
+      done();
       if (err) {
         console.log(err);
         response.sendStatus(500);
@@ -159,7 +155,8 @@ exports.getAll = function (request, response) {
               longitude: result.rows[i].longitude
             }
           }
-        }
+        };
+        console.log(result.rows[i].interests);
         jsonObject.users.push(oneUser);
       }
       return response.json(jsonObject);
@@ -168,7 +165,43 @@ exports.getAll = function (request, response) {
 };
 
 exports.getCandidate = function (request, response) {
-  response.sendStatus(200);
+  var interests = [];
+  pg.connect(config.DATABASE_URL, function (err, client, done) {
+    client.query("SELECT * FROM users WHERE alias = ($1)", [request.params.user], function (err, result) {
+      if (result.rowCount) {
+        if (result.rows[0].interests) {
+          interests = result.rows[0].interests.replace(/[{}\"]+/g, "").split(',');
+          var query = client.query("SELECT * FROM users WHERE alias != ($1)", [request.params.user]);
+          // Stream results back one row at a time
+          query.on('row', function (row, result) {
+            result.addRow(row);
+          });
+          // After all data is returned, close connection and return results
+          query.on('end', function (result) {
+            done();
+            var jsonObject = {"users": [], metadata: {version: 0.1}};
+            for (var i = 0; i < result.rowCount; i++) {
+              if (result.rows[i].interests) {
+                var userInterests = result.rows[i].interests.replace(/[{}\"]+/g, "").split(',');
+                for (var j = 0; j < userInterests.length; j++) {
+                  if (_.indexOf(interests, userInterests[j]) != -1) {
+                    jsonObject.users.push(result.rows[i]);
+                    break;
+                  }
+                }
+              }
+            }
+            jsonObject.metadata.count = jsonObject.users.length;
+            return response.json(jsonObject);
+          });
+        } else {
+          return response.status(400).json({error: "User does not have interests"});
+        }
+      } else {
+        return response.status(400).json({error: "User not found in the database"});
+      }
+    });
+  });
 };
 
 exports.form_newUser = function (request, response) {

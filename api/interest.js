@@ -23,7 +23,7 @@ exports.create = function (request, response) {
 exports.delete = function (request, response) {
   pg.connect(config.DATABASE_URL, function (err, client, done) {
     client.query("DELETE FROM interests WHERE id = ($1)", [request.params.id], function (err) {
-      //done();
+      done();
       if (err) {
         console.log(err);
         response.sendStatus(500);
