@@ -1,34 +1,136 @@
 <html>
 <head>
-  <title>Modificación de perfil</title>
-  <style type="text/css">
-    form{
-      width:50% !important;
-      margin-left:25% !important;
-    }
-    h1{
-      text-align:center;
-    }
-    table{
-      text-align:center;
-      width:50% !important;
-      margin-left:25%!important;
-    }
-  </style>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link type="text/css" rel="stylesheet" href="/css/materialize.css">
+<link type="text/css" rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+<header>
+	<nav class="main-navigator">
+		<div class="nav-wrapper">
+		  <a href="#" class="brand-logo">MatchApp</a>
+		  <ul id="nav-mobile" class="right">
+			<li class="active"><a href="/form_viewUser">Usuarios</a></li>
+			<li><a href="/form_viewInterests">Intereses</a></li>
+		  </ul>
+		</div>
+	</nav>
+	<nav class="breadcrumbs">
+		<div class="nav-wrapper">
+		  <div class="col s12">
+			<a href="/" class="breadcrumb">Home</a>
+			<a href="/form_viewUser" class="breadcrumb">Usuarios</a>
+			<a href="#" class="breadcrumb">Editar Usuario</a>
+		  </div>
+		</div>
+	</nav>
+</header>
+<main>
+	<div class="container">
+		 <h2 class="header center-align">Editar usuario</h2>
+		      <div class="row">
+				<div class="col s12 m12">
+				  <div class="card">
+					<div class="card-content">
+					  <form id="myform" class="form-horizontal">
+						<div class="form-group">
+						  <label for="inputNombre" class="col-sm-2 control-label">Nombre</label>
+						  <div class="col-sm-10">
+							<input type="text" class="form-control" id="inputNombre" placeholder="Nombre" name="name">
+						  </div>
+						</div>
+						<div class="form-group">
+						  <label for="inputAlias" class="col-sm-2 control-label">Alias</label>
+						  <div class="col-sm-10">
+							<input type="text" class="form-control" id="inputAlias" placeholder="Alias" name="username">
+						  </div>
+						</div>
+						<div class="form-group">
+						  <label for="inputEmail" class="col-sm-2 control-label">Password</label>
+						  <div class="col-sm-10">
+							<input type="text" class="form-control" id="inputPassword" placeholder="Password" name="password">
+						  </div>
+						</div>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+					   <div class="form-group">
+						  <label for="inputSex" class="col-sm-2 control-label">Sex</label>
+						  <div class="col-sm-10">
+							<select id="inputSex" placeholder="Sex" name="sex"  class="form-control browser-default">
+							   <option value="F">F</option>
+							   <option value="M">M</option>
+							</select>
+						  </div>
+						</div>
 
-  <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+					   <div class="form-group">
+						  <label for="inputAge" class="col-sm-2 control-label">Age</label>
+						  <div class="col-sm-10">
+							<input type="text" class="form-control" id="inputAge" placeholder="Age" name="age">
+						  </div>
+						</div>
 
-  <!-- Optional theme -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+						<div class="form-group">
+						  <label for="inputEmail" class="col-sm-2 control-label">Email</label>
+						  <div class="col-sm-10">
+							<input type="text" class="form-control" id="inputEmail" placeholder="Email" name="email">
+						  </div>
+						</div>
+					  <div class="form-group">
+						<label for="inputInterest" class="col-sm-2 control-label">Interests</label>
+						<div class="col-sm-10">
+						  <select class="form-control browser-default" id="inputInterest" name="interests" multiple></select>
+						</div>
+					  </div>
 
-  <!-- Latest compiled and minified JavaScript -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-
-  <script type="text/javascript">
-    var interests = null;
+					  <div class="form-group">
+						<label for="inputEmail" class="col-sm-2 control-label">Latitud</label>
+						<div class="col-sm-10">
+						  <input type="text" class="form-control" id="inputLatit" placeholder="Latitud" name="latitude">
+						</div>
+					  </div>
+					  <div class="form-group">
+						<label for="inputEmail" class="col-sm-2 control-label">Longitud</label>
+						<div class="col-sm-10">
+						  <input type="text" class="form-control" id="inputLongi" placeholder="Longitud" name="longitude">
+						</div>
+					  </div>
+					  <div class="form-group">
+						<label for="inputfile" class="col-sm-2 control-label">Imagen</label>
+						<div class="col-sm-10">
+						  <input type="file" class="form-control" id="inputfile" placeholder="file" name="file">
+						</div>
+					  </div>
+					  <div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+						  <button type="submit" class="btn btn-large">Enviar <i class="material-icons right">send</i></button>
+						</div>
+					  </div>
+					</form>
+					</div>
+				  </div>
+				</div>
+			  </div>
+	</div>
+</main>
+<footer class="page-footer">
+  <div class="container">
+	<div class="row">
+	  <div class="col l6 s12">
+		<h5 class="white-text">Grupo 10</h5>
+	  </div>
+	</div>
+  </div>
+  <div class="footer-copyright">
+	<div class="container">
+	1er cuatrimestre 2016
+	<a class="grey-text text-lighten-4 right" href="http://www.7552.fi.uba.ar/">Taller de programacion II</a>
+	</div>
+  </div>
+</footer>
+<script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript"  src="/js/materialize.js"></script>
+<script type="text/javascript">
+var interests = null;
     var id_global = null;
     $(document).ready(function(){
      var midata = null;
@@ -84,10 +186,10 @@
             var value = interestJson.value;
             var complete = category+'-'+value;
 
-		    if(interests.indexOf(complete) ==  -1){
-		   	 $("#inputInterest").append('<option>'+complete+'</option>');}
+		    if(interests && interests.indexOf(complete) >  -1){
+		   	 $("#inputInterest").append('<option selected>'+complete+'</option>');}
 		    else{
-		    $("#inputInterest").append('<option selected>'+complete+'</option>');
+		    $("#inputInterest").append('<option>'+complete+'</option>');
  		    }
           }
         },
@@ -110,91 +212,6 @@ function edit(){
   alert("Usuario modificado satisfactoriamente");
   window.location.href = "/";
 }
-
-</script>
-</head>
-
-<body>
-  <ol class="breadcrumb">
-    <li><a href="/">Home</a></li>
-    <li><a href="/form_newUser">Alta usuario</a></li>
-    <li class="active"><a href="/form_viewUser">Ver usuarios</a></li>
-    <li><a href="/form_newInterest">Alta interés</a></li>
-    <li><a href="/form_viewInterests">Ver intereses</a></li>
-  </ol>
-
-  <h1>Shared Server RestFul Api</h1>
-  <hr>
-  <br>
-  <br>
-
-  <form class="form-horizontal">
-    <div class="form-group">
-      <label for="inputNombre" class="col-sm-2 control-label">Nombre</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" id="inputNombre" placeholder="Nombre" name="name">
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="inputAlias" class="col-sm-2 control-label">Alias</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" id="inputAlias" placeholder="Alias" name="alias">
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="inputEmail" class="col-sm-2 control-label">Password</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" id="inputPassword" placeholder="Password" name="password">
-      </div>
-    </div>
-
-<div class="form-group">
-      <label for="inputSex" class="col-sm-2 control-label">Sex</label>
-      <div class="col-sm-10">
-        <select class="form-control" id="inputSex" placeholder="Sex" name="sex">
-	<option>F</option>
-        <option>M</option>
-	</select>
-      </div>
-    </div>
-
-   <div class="form-group">
-      <label for="inputAge" class="col-sm-2 control-label">Age</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" id="inputAge" placeholder="Age" name="age">
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="inputEmail" class="col-sm-2 control-label">Email</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" id="inputEmail" placeholder="Email" name="email">
-      </div>
-    </div>
-    <div class="form-group">
-    <label for="inputInterest" class="col-sm-2 control-label">Interests</label>
-    <div class="col-sm-10">
-      <select class="form-control" id="inputInterest" name="interests" multiple></select>
-    </div>
-  </div>
-    <div class="form-group">
-      <label for="inputEmail" class="col-sm-2 control-label">Latitud</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" id="inputLatit" placeholder="Latitud" name="latitude">
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="inputEmail" class="col-sm-2 control-label">Longitud</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" id="inputLongi" placeholder="Longitud" name="longitude">
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
-       <!-- <button id="as" class="btn btn-default" onclick="edit()">Modificar Usuario</button>-->
-     </div>
-   </div>
- </form>
- <button id="as" class="btn btn-default" style="margin-left:45%;"onclick="edit()">Modificar Usuario</button>
+	</script>
 </body>
 </html>
