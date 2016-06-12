@@ -1,169 +1,198 @@
 <html>
 <head>
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<link type="text/css" rel="stylesheet" href="/css/materialize.css">
-<link type="text/css" rel="stylesheet" href="/css/main.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="/css/materialize.css">
+    <link type="text/css" rel="stylesheet" href="/css/main.css">
 </head>
 <body>
 <header>
-	<nav class="main-navigator">
-		<div class="nav-wrapper">
-		  <a href="#" class="brand-logo">MatchApp</a>
-		  <ul id="nav-mobile" class="right">
-			<li class="active"><a href="/form_viewUser">Usuarios</a></li>
-			<li><a href="/form_viewInterests">Intereses</a></li>
-		  </ul>
-		</div>
-	</nav>
-	<nav class="breadcrumbs">
-		<div class="nav-wrapper">
-		  <div class="col s12">
-			<a href="/" class="breadcrumb">Home</a>
-			<a href="/form_viewUser" class="breadcrumb">Usuarios</a>
-			<a href="/form_newUser" class="breadcrumb">Alta Usuario</a>
-		  </div>
-		</div>
-	</nav>
+    <nav class="main-navigator">
+        <div class="nav-wrapper">
+            <a href="#" class="brand-logo">MatchApp</a>
+            <ul id="nav-mobile" class="right">
+                <li class="active"><a href="/form_viewUser">Usuarios</a></li>
+                <li><a href="/form_viewInterests">Intereses</a></li>
+            </ul>
+        </div>
+    </nav>
+    <nav class="breadcrumbs">
+        <div class="nav-wrapper">
+            <div class="col s12">
+                <a href="/" class="breadcrumb">Home</a>
+                <a href="/form_viewUser" class="breadcrumb">Usuarios</a>
+                <a href="/form_newUser" class="breadcrumb">Alta Usuario</a>
+            </div>
+        </div>
+    </nav>
 </header>
 <main>
-	<div class="container">
-		 <h2 class="header center-align">Alta de usuario</h2>
-		      <div class="row">
-				<div class="col s12 m12">
-				  <div class="card">
-					<div class="card-content">
-					  <form id="myform" class="form-horizontal">
-						<div class="form-group">
-						  <label for="inputNombre" class="col-sm-2 control-label">Nombre</label>
-						  <div class="col-sm-10">
-							<input type="text" class="form-control" id="inputNombre" placeholder="Nombre" name="name">
-						  </div>
-						</div>
-						<div class="form-group">
-						  <label for="inputAlias" class="col-sm-2 control-label">Alias</label>
-						  <div class="col-sm-10">
-							<input type="text" class="form-control" id="inputAlias" placeholder="Alias" name="username">
-						  </div>
-						</div>
-						<div class="form-group">
-						  <label for="inputEmail" class="col-sm-2 control-label">Password</label>
-						  <div class="col-sm-10">
-							<input type="text" class="form-control" id="inputPassword" placeholder="Password" name="password">
-						  </div>
-						</div>
+    <div class="container">
+        <h2 class="header center-align">Alta de usuario</h2>
+        <div class="row">
+            <div class="col s12 m12">
+                <div class="card">
+                    <div class="card-content">
+                        <form id="myform" class="form-horizontal">
+                            <div class="form-group">
+                                <label for="inputNombre" class="col-sm-2 control-label">Nombre</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputNombre" placeholder="Nombre"
+                                           name="name">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputAlias" class="col-sm-2 control-label">Alias</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputAlias" placeholder="Alias"
+                                           name="username">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputEmail" class="col-sm-2 control-label">Password</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputPassword" placeholder="Password"
+                                           name="password">
+                                </div>
+                            </div>
 
-					   <div class="form-group">
-						  <label for="inputSex" class="col-sm-2 control-label">Sex</label>
-						  <div class="col-sm-10">
-							<select id="inputSex" placeholder="Sex" name="sex"  class="form-control browser-default">
-							   <option value="F">F</option>
-							   <option value="M">M</option>
-							</select>
-						  </div>
-						</div>
+                            <div class="form-group">
+                                <label for="inputSex" class="col-sm-2 control-label">Sex</label>
+                                <div class="col-sm-10">
+                                    <select id="inputSex" placeholder="Sex" name="sex"
+                                            class="form-control browser-default">
+                                        <option value="F">F</option>
+                                        <option value="M">M</option>
+                                    </select>
+                                </div>
+                            </div>
 
-					   <div class="form-group">
-						  <label for="inputAge" class="col-sm-2 control-label">Age</label>
-						  <div class="col-sm-10">
-							<input type="text" class="form-control" id="inputAge" placeholder="Age" name="age">
-						  </div>
-						</div>
+                            <div class="form-group">
+                                <label for="inputAge" class="col-sm-2 control-label">Age</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputAge" placeholder="Age" name="age">
+                                </div>
+                            </div>
 
-						<div class="form-group">
-						  <label for="inputEmail" class="col-sm-2 control-label">Email</label>
-						  <div class="col-sm-10">
-							<input type="text" class="form-control" id="inputEmail" placeholder="Email" name="email">
-						  </div>
-						</div>
-					  <div class="form-group">
-						<label for="inputInterest" class="col-sm-2 control-label">Interests</label>
-						<div class="col-sm-10">
-						  <select class="form-control browser-default" id="inputInterest" name="interests" multiple></select>
-						</div>
-					  </div>
+                            <div class="form-group">
+                                <label for="inputEmail" class="col-sm-2 control-label">Email</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputEmail" placeholder="Email"
+                                           name="email">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputInterest" class="col-sm-2 control-label">Interests</label>
+                                <div class="col-sm-10">
+                                    <select class="form-control browser-default" id="inputInterest" name="interests"
+                                            multiple></select>
+                                </div>
+                            </div>
 
-					  <div class="form-group">
-						<label for="inputEmail" class="col-sm-2 control-label">Latitud</label>
-						<div class="col-sm-10">
-						  <input type="text" class="form-control" id="inputLatit" placeholder="Latitud" name="latitude">
-						</div>
-					  </div>
-					  <div class="form-group">
-						<label for="inputEmail" class="col-sm-2 control-label">Longitud</label>
-						<div class="col-sm-10">
-						  <input type="text" class="form-control" id="inputLongi" placeholder="Longitud" name="longitude">
-						</div>
-					  </div>
-					  <div class="form-group">
-						<label for="inputfile" class="col-sm-2 control-label">Imagen</label>
-						<div class="col-sm-10">
-						  <input type="file" class="form-control" id="inputfile" placeholder="file" name="file">
-						</div>
-					  </div>
-					  <div class="form-group">
-						<div class="col-sm-offset-2 col-sm-10">
-						  <button type="submit" class="btn btn-large">Enviar <i class="material-icons right">send</i></button>
-						</div>
-					  </div>
-					</form>
-					</div>
-				  </div>
-				</div>
-			  </div>
-	</div>
+                            <div class="form-group">
+                                <label for="inputEmail" class="col-sm-2 control-label">Latitud</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputLatit" placeholder="Latitud"
+                                           name="latitude">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputEmail" class="col-sm-2 control-label">Longitud</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputLongi" placeholder="Longitud"
+                                           name="longitude">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputfile" class="col-sm-2 control-label">Imagen</label>
+                                <div class="col-sm-10">
+                                    <input type="file" class="form-control" id="inputfile" placeholder="file"
+                                           name="file">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <button type="submit" class="btn btn-large">Enviar <i class="material-icons right">send</i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 <footer class="page-footer">
-  <div class="container">
-	<div class="row">
-	  <div class="col l6 s12">
-		<h5 class="white-text">Grupo 10</h5>
-	  </div>
-	</div>
-  </div>
-  <div class="footer-copyright">
-	<div class="container">
-	1er cuatrimestre 2016
-	<a class="grey-text text-lighten-4 right" href="http://www.7552.fi.uba.ar/">Taller de programacion II</a>
-	</div>
-  </div>
+    <div class="container">
+        <div class="row">
+            <div class="col l6 s12">
+                <h5 class="white-text">Grupo 10</h5>
+            </div>
+        </div>
+    </div>
+    <div class="footer-copyright">
+        <div class="container">
+            1er cuatrimestre 2016
+            <a class="grey-text text-lighten-4 right" href="http://www.7552.fi.uba.ar/">Taller de programacion II</a>
+        </div>
+    </div>
 </footer>
 <script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
-<script type="text/javascript"  src="/js/materialize.js"></script>
+<script type="text/javascript" src="/js/materialize.js"></script>
 <script type="text/javascript">
-	$(document).ready(function(){
-      var midata = null;
-      $.ajax({
-        url: "/interests",
-        type: "GET",
-        contentType: 'application/json; charset=utf-8',
-        success: function(resultData) {
-          for (var i = 0; i < resultData.interests.length; i++) {
-            var interest = resultData.interests[i];
-            var interestJson = interest.interest;
-            var id = interestJson.id;
-            var category = interestJson.category;
-            var value = interestJson.value;
-            $("#inputInterest").append('<option>'+category+'-'+value+'</option>');
-          }
-        },
-        error : function(jqXHR, textStatus, errorThrown) {
-        },
-        timeout: 120000,
-      });
+    $(document).ready(function () {
+        var midata = null;
+        $.ajax({
+            url: "/interests",
+            type: "GET",
+            contentType: 'application/json; charset=utf-8',
+            success: function (resultData) {
+                for (var i = 0; i < resultData.interests.length; i++) {
+                    var interest = resultData.interests[i];
+                    var interestJson = interest.interest;
+                    var id = interestJson.id;
+                    var category = interestJson.category;
+                    var value = interestJson.value;
+                    $("#inputInterest").append('<option>' + category + '-' + value + '</option>');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            },
+            timeout: 120000,
+        });
     });
-	  $("#myform").submit(function(event) {
-      // Cancels the form's submit action.
-      event.preventDefault();
-      $.ajax({
-        url: "/users",
-        type: "POST",
-        data: $(this).serialize(),
-        dataType: 'json',
-        success: function(resultData) {
-          window.location.href = "/form_viewUser";
+
+    $("#myform").submit(function (event) {
+        // Cancels the form's submit action.
+        event.preventDefault();
+
+        var data = $(this).serialize();
+
+        var file = $('#inputfile')[0].files[0];
+        var password = $('#inputPassword').val();
+
+        // add validations
+        if (file && password) {
+            var reader = new FileReader();
+            reader.onload = function (readerEvt) {
+                var binaryString = readerEvt.target.result;
+                data += "&file=" + binaryString;
+                $.ajax({
+                    url: "/users",
+                    type: "POST",
+                    data: data,
+                    dataType: 'json',
+                    success: function (resultData) {
+                        window.location.href = "/form_viewUser";
+                    }
+                });
+            };
+            reader.readAsDataURL(file);
         }
-      });
+
     });
-	</script>
+
+
+</script>
 </body>
 </html>

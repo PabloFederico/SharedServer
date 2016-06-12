@@ -4,21 +4,27 @@ var _ = require('underscore');
 var config = require('../config');
 var utils = require('../utils');
 
-function createUserFromResult(result) {
+function createUserFromResult(result, index) {
+
+  if (!index) {
+    index = 0;
+  }
+
   return {
     user: {
-      id: result.rows[0].id,
-      name: result.rows[0].name,
-      alias: result.rows[0].alias,
-      email: result.rows[0].email,
-      sex: result.rows[0].sex,
-      age: result.rows[0].age,
+      id: result.rows[index].id,
+      name: result.rows[index].name,
+      alias: result.rows[index].alias,
+      email: result.rows[index].email,
+      sex: result.rows[index].sex,
+      age: result.rows[index].age,
       photo_profile: 'base_64',
-      interests: result.rows[0].interests,
+      interests: result.rows[index].interests,
       location: {
-        latitude: result.rows[0].latitude,
-        longitude: result.rows[0].longitude
-      }
+        latitude: result.rows[index].latitude,
+        longitude: result.rows[index].longitude
+      },
+      file: result.rows[index].file
     },
     metadata: {
       version: 1.0
@@ -35,7 +41,7 @@ exports.login = function (request, response) {
 
 exports.create = function (request, response) {
   pg.connect(config.DATABASE_URL, function (err, client, done) {
-    console.log(request.body.interests);
+
     var encryptedPassword = utils.encryptPassword(request.body.password);
     var data = {
       name: request.body.name,
@@ -46,7 +52,8 @@ exports.create = function (request, response) {
       sex: request.body.sex,
       age: request.body.age,
       latitude: request.body.latitude,
-      longitude: request.body.longitude
+      longitude: request.body.longitude,
+      file: request.body.file
     };
 
     client.query("SELECT * FROM users WHERE alias = ($1)", [data.alias], function (err, result) {
@@ -54,14 +61,16 @@ exports.create = function (request, response) {
         console.log('username already taken');
         return response.status(400).json({error: "username already taken"});
       } else {
-        client.query("INSERT INTO users(name, alias, password, email, interests, sex, age, latitude, longitude) values($1, $2, $3, $4, $5, $6, $7, $8, $9)", [data.name, data.alias, data.password, data.email, data.interests, data.sex, data.age, data.latitude, data.longitude]
+        client.query("INSERT INTO users(name, alias, password, email, interests, sex, age, latitude, longitude, image)" +
+          " values($1, $2, $3, $4, $5, $6, $7, $8, $9,$10)",
+          [data.name, data.alias, data.password, data.email, data.interests, data.sex, data.age, data.latitude, data.longitude, data.file]
           , function (err) {
             done();
             if (err) {
               console.log(err);
             }
             // After all data is returned, close connection and return results
-            return response.status(200).json({message: "Signup successfully"});
+            return response.status(200).json({message: "Successful signup"});
           });
       }
     });
@@ -80,11 +89,11 @@ exports.update = function (request, response) {
   pg.connect(config.DATABASE_URL, function (err, client, done) {
     client.query("UPDATE users SET" + updateQuery + " WHERE id = ($1)", [request.params.id], function (result) {
       done();
-     // if (result.rowCount) {
-      response.sendStatus(200);
-      //} else {
-        //response.sendStatus(500);
-      //}
+      if (result.rowCount) {
+        response.sendStatus(200);
+      } else {
+        response.sendStatus(500);
+      }
     });
   });
 };
@@ -140,24 +149,8 @@ exports.getAll = function (request, response) {
       done();
       var jsonObject = {"users": [], metadata: {version: 0.1, count: result.rowCount}};
       for (var i = 0; i < result.rowCount; i++) {
-        var oneUser = {
-          user: {
-            id: result.rows[i].id,
-            name: result.rows[i].name,
-            alias: result.rows[i].alias,
-            email: result.rows[i].email,
-            sex: result.rows[i].sex,
-            age: result.rows[i].age,
-            photo_profile: 'http://server/users/id/photo',
-            interests: result.rows[i].interests,
-            location: {
-              latitude: result.rows[i].latitude,
-              longitude: result.rows[i].longitude
-            }
-          }
-        };
-        console.log(result.rows[i].interests);
-        jsonObject.users.push(oneUser);
+        var anUser = createUserFromResult(result, i).user;
+        jsonObject.users.push(anUser);
       }
       return response.json(jsonObject);
     });
