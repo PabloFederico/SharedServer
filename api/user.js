@@ -79,6 +79,7 @@ exports.create = function (request, response) {
 
 exports.update = function (request, response) {
   var updateQuery = [];
+
   var keys = _.keys(request.body);
 
   for (var i = 0; i < keys.length; i++) {
@@ -87,16 +88,20 @@ exports.update = function (request, response) {
   updateQuery = updateQuery.join();
 
   pg.connect(config.DATABASE_URL, function (err, client, done) {
-    client.query("UPDATE users SET" + updateQuery + " WHERE id = ($1) RETURNING 1", [request.params.id], function (result) {
+    client.query("UPDATE users SET" + updateQuery + " WHERE id = ($1)", [request.params.id], function (err, result) {
       done();
-      response.sendStatus(200);
+      if (!err) {
+        response.status(200).json({message: "Successful update"});
+      } else {
+        response.status(500).json({message: "An error ocurred"});
+      }
     });
   });
 };
 
 exports.delete = function (request, response) {
   pg.connect(config.DATABASE_URL, function (err, client, done) {
-    client.query("DELETE FROM users WHERE id = ($1)", [request.params.id], function (err) {
+    client.query("DELETE FROM users WHERE id = ($1)", [request.params.id], function (err, result) {
       done();
       if (err) {
         console.log(err);
