@@ -1,6 +1,7 @@
 "use strict";
 var pg = require('pg');
 var _ = require('underscore');
+var crypto = require('crypto');
 var config = require('../config');
 var utils = require('../utils');
 
@@ -56,17 +57,19 @@ exports.create = function (request, response) {
       file: request.body.file
     };
 
-    console.log(data.file);
-
     client.query("SELECT * FROM users WHERE alias = ($1)", [data.alias], function (err, result) {
       if (result.rowCount) {
         console.log('username already taken');
-        return response.status(400).json({error: "username already taken"});
+        return response.status(400).json({error: "Username already taken"});
       } else {
+
+        var password = crypto.createHash('sha256').update(data.password).digest('base64');
+        var image = data.file.replace(/ /g, '+')
+
         client.query("INSERT INTO users(name, alias, password, email, interests, sex, age, latitude, longitude, image)" +
           " values($1, $2, $3, $4, $5, $6, $7, $8, $9,$10)",
-          [data.name, data.alias, data.password, data.email, data.interests, data.sex, data.age
-            , data.latitude, data.longitude, data.file.replace(/ /g, '+')]
+          [data.name, data.alias, password, data.email, data.interests, data.sex, data.age
+            , data.latitude, data.longitude, image]
           , function (err) {
             done();
             if (err) {
@@ -150,8 +153,19 @@ exports.update = function (request, response) {
   var keys = _.keys(request.body);
 
   for (var i = 0; i < keys.length; i++) {
-    updateQuery[i] = " " + keys[i] + " = '" + request.body[keys[i]] + "'";
+
+    var keyValue = request.body[keys[i]];
+
+    if (keys[i] == "password") {
+      keyValue = crypto.createHash('sha256').update(keyValue).digest('base64');
+    } else if (keys[i] == "image") {
+      keyValue = keyValue.replace(/ /g, '+')
+    }
+
+    updateQuery[i] = " " + keys[i] + " = '" + keyValue + "'";
+
   }
+
   updateQuery = updateQuery.join();
 
   pg.connect(config.DATABASE_URL, function (err, client, done) {

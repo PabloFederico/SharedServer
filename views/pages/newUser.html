@@ -50,7 +50,8 @@
                             <div class="form-group">
                                 <label for="inputEmail" class="col-sm-2 control-label">Password</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="inputPassword" placeholder="Password"
+                                    <input type="password" class="form-control" id="inputPassword"
+                                           placeholder="Password"
                                            name="password">
                                 </div>
                             </div>
@@ -166,7 +167,6 @@
         // Cancels the form's submit action.
         event.preventDefault();
 
-
         var data = $(this).serialize();
 
         var file = $('#inputfile')[0].files[0];
@@ -192,18 +192,18 @@
         }
 
         /*
-        @Pablo esto lo tenés que hacer en el mismo /users, sino si falla uno el otro queda inconsistente
-        var alias = $("#inputAlias").val();
-        var interest = $("#inputInterest").val();
-        $.ajax({
-            url: "/userInterest",
-            type: "POST",
-            data: "alias="+alias+"&interest="+interest+"",
-            dataType: 'json',
-            success: function (resultData) {
-                window.location.href = "/form_viewUser";
-            }
-        });*/
+         @Pablo esto lo tenés que hacer en el mismo /users, sino si falla uno el otro queda inconsistente
+         var alias = $("#inputAlias").val();
+         var interest = $("#inputInterest").val();
+         $.ajax({
+         url: "/userInterest",
+         type: "POST",
+         data: "alias="+alias+"&interest="+interest+"",
+         dataType: 'json',
+         success: function (resultData) {
+         window.location.href = "/form_viewUser";
+         }
+         });*/
     });
 
 
