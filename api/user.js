@@ -127,6 +127,20 @@ exports.getAllUserInterest = function (request, response) {
   });
 };
 
+exports.deleteUserInterest = function (request, response) {
+  pg.connect(config.DATABASE_URL, function (err, client, done) {
+    client.query("DELETE FROM userInterest WHERE alias = ($1)", [request.params.alias], function (err, result) {
+      done();
+      if (err) {
+        console.log(err);
+        response.sendStatus(500);
+      } else {
+        response.sendStatus(200);
+      }
+    });
+  });
+};
+
 //------------------------------------------------------------------------------------
 
 exports.update = function (request, response) {
@@ -153,7 +167,7 @@ exports.update = function (request, response) {
 
 exports.delete = function (request, response) {
   pg.connect(config.DATABASE_URL, function (err, client, done) {
-    client.query("DELETE FROM users WHERE id = ($1)", [request.params.id], function (err, result) {
+    client.query("DELETE FROM users WHERE alias = ($1)", [request.params.alias], function (err, result) {
       done();
       if (err) {
         console.log(err);

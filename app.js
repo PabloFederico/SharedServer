@@ -58,11 +58,13 @@ pg.connect(config.DATABASE_URL, function (err, client, done) {
         throw err;
       }
     });
+    client.query('DROP TABLE IF EXISTS userInterest',function(err,result){
     client.query('CREATE TABLE IF NOT EXISTS userInterest(id SERIAL PRIMARY KEY, alias VARCHAR(30), interest VARCHAR(30))', function (err, result) {
       if (err) {
         console.log(err);
         throw err;
       }
+});
       done();
     });
   });
