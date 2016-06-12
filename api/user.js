@@ -77,6 +77,58 @@ exports.create = function (request, response) {
   });
 };
 
+//User-interest------------------------------------------------------
+exports.createUserInterest = function (request,response) {
+
+ pg.connect(config.DATABASE_URL, function (err, client, done) {
+
+    var data = {
+      alias: request.body.alias,
+      interest: request.body.interest,
+    };
+   var arrayInterests = data.interest.split(',');
+   
+
+	for(var i=0;i<arrayInterests.length;i++) {
+        client.query("INSERT INTO userInterest(alias, interest) values($1, $2)",[data.alias, arrayInterests[i]], function (err) {
+            done();
+            if (err) {
+              console.log(err);
+            }
+            // After all data is returned, close connection and return results
+            //return response.status(200).json({message: "Successful"});
+          });
+
+	}
+	return response.status(200).json({message: "Successful"});
+    });
+};
+
+
+exports.getAllUserInterest = function (request, response) {
+  pg.connect(config.DATABASE_URL, function (err, client, done) {
+    var query = client.query("SELECT * FROM userInterest ORDER BY id ASC;");
+
+    // Stream results back one row at a time
+    query.on('row', function (row, result) {
+      result.addRow(row);
+    });
+
+    // After all data is returned, close connection and return results
+    query.on('end', function (result) {
+      done();
+      var jsonObject = {"data": [], metadata: 0.1};
+      for (var i = 0; i < result.rowCount; i++) {
+        var anUserInterest = {"alias":result.rows[i].alias,"interest":result.rows[i].interest};
+        jsonObject.data.push(anUserInterest);
+      }
+      return response.json(jsonObject);
+    });
+  });
+};
+
+//------------------------------------------------------------------------------------
+
 exports.update = function (request, response) {
   var updateQuery = [];
 
@@ -217,3 +269,8 @@ exports.form_newInterest = function (request, response) {
 exports.form_viewInterests = function (request, response) {
   response.render('viewInterests.html');
 };
+
+exports.form_viewUserInterest = function (request, response) {
+  response.render('viewUserInterest.html');
+};
+

@@ -165,6 +165,8 @@
     $("#myform").submit(function (event) {
         // Cancels the form's submit action.
         event.preventDefault();
+	var alias = $("#inputAlias").val();
+	var interest = $("#inputInterest").val();
 
         var data = $(this).serialize();
 
@@ -183,12 +185,25 @@
                     data: data,
                     dataType: 'json',
                     success: function (resultData) {
-                        window.location.href = "/form_viewUser";
+                        //window.location.href = "/form_viewUser";
+				
                     }
                 });
             };
             reader.readAsDataURL(file);
-        }
+
+       	}
+			$.ajax({
+                    		url: "/userInterest",
+                    		type: "POST",
+                    		data: "alias="+alias+"&interest="+interest+"",
+                   		 dataType: 'json',
+                   		 success: function (resultData) {
+                      			 window.location.href = "/form_viewUser";
+			         }
+              			});
+
+  			
 
     });
 
