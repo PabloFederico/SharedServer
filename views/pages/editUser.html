@@ -141,7 +141,6 @@
 <script type="text/javascript" src="/js/materialize.js"></script>
 <script type="text/javascript">
     var interests = null;
-    var id_global = null;
     $(document).ready(function () {
         var user_id = window.location.href;
         user_id = parseInt((user_id).split("=")[1]);
@@ -168,7 +167,6 @@
                 $("#inputSex").val(sexo);
                 $("#inputLatit").val(latitude);
                 $("#inputLongi").val(longitude);
-                id_global = id;
             },
             error: function (jqXHR, textStatus, errorThrown) {
             },
@@ -203,17 +201,28 @@
 
     });
 
-    function edit() {
-        var modifyData = [$("#inputNombre").val(), $("#inputAlias").val(), $("#inputPassword").val(), $("#inputEmail").val(), $("#inputLatit").val(), $("#inputLongi").val(), $("#inputAge").val(), $("#inputSex").val(), $("#inputInterest").val()];
+    $("#myform").submit(function (event) {
+
+        // Cancels the form's submit action.
+        event.preventDefault();
+
+        var user_id = window.location.href;
+        user_id = parseInt((user_id).split("=")[1]);
+
+        var modifyData = [$("#inputNombre").val(), $("#inputAlias").val(), $("#inputPassword").val(), $("#inputEmail").val(),
+            $("#inputLatit").val(), $("#inputLongi").val(), $("#inputAge").val(), $("#inputSex").val(), $("#inputInterest").val()];
         $.ajax({
             type: 'PUT',
             dataType: 'json',
-            url: "users/" + id_global,
-            data: "name=" + modifyData[0] + "&alias=" + modifyData[1] + "&password=" + modifyData[2] + "&age=" + modifyData[6] + "&email=" + modifyData[3] + "&latitude=" + modifyData[4] + "&longitude=" + modifyData[5] + "&sex=" + modifyData[7] + "&interests=" + modifyData[8] + ""
+            url: "/users/" + user_id,
+            data: "name=" + modifyData[0] + "&alias=" + modifyData[1] + "&password=" + modifyData[2]
+            + "&age=" + modifyData[6] + "&email=" + modifyData[3] + "&latitude=" + modifyData[4] +
+            "&longitude=" + modifyData[5] + "&sex=" + modifyData[7] + "&interests=" + modifyData[8] + "&image=" + modifyData[9],
+            success: function (resultData) {
+                window.location.href = "/form_viewUser";
+            }
         });
-        alert("Usuario modificado satisfactoriamente");
-        window.location.href = "/";
-    }
+    })
 </script>
 </body>
 </html>

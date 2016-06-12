@@ -87,13 +87,9 @@ exports.update = function (request, response) {
   updateQuery = updateQuery.join();
 
   pg.connect(config.DATABASE_URL, function (err, client, done) {
-    client.query("UPDATE users SET" + updateQuery + " WHERE id = ($1)", [request.params.id], function (result) {
+    client.query("UPDATE users SET" + updateQuery + " WHERE id = ($1) RETURNING 1", [request.params.id], function (result) {
       done();
-      if (result.rowCount) {
-        response.sendStatus(200);
-      } else {
-        response.sendStatus(500);
-      }
+      response.sendStatus(200);
     });
   });
 };
