@@ -246,7 +246,9 @@ exports.getCandidate = function (request, response) {
       if (result.rowCount) {
         if (result.rows[0].interests) {
           interests = result.rows[0].interests.replace(/[{}\"]+/g, "").split(',');
-          var query = client.query("SELECT * FROM users WHERE alias != ($1)", [request.params.user]);
+          var query = client.query("SELECT name,alias,email,sex,interests,age,latitude,longitude" +
+            ",encode(image, 'escape') AS image" +
+            " FROM users WHERE alias != ($1)", [request.params.user]);
           // Stream results back one row at a time
           query.on('row', function (row, result) {
             result.addRow(row);
