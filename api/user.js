@@ -56,6 +56,8 @@ exports.create = function (request, response) {
       file: request.body.file
     };
 
+    console.log(data.file);
+
     client.query("SELECT * FROM users WHERE alias = ($1)", [data.alias], function (err, result) {
       if (result.rowCount) {
         console.log('username already taken');
@@ -63,7 +65,8 @@ exports.create = function (request, response) {
       } else {
         client.query("INSERT INTO users(name, alias, password, email, interests, sex, age, latitude, longitude, image)" +
           " values($1, $2, $3, $4, $5, $6, $7, $8, $9,$10)",
-          [data.name, data.alias, data.password, data.email, data.interests, data.sex, data.age, data.latitude, data.longitude, data.file]
+          [data.name, data.alias, data.password, data.email, data.interests, data.sex, data.age
+            , data.latitude, data.longitude, data.file.replace(/ /g, '+')]
           , function (err) {
             done();
             if (err) {
@@ -78,32 +81,30 @@ exports.create = function (request, response) {
 };
 
 //User-interest------------------------------------------------------
-exports.createUserInterest = function (request,response) {
+exports.createUserInterest = function (request, response) {
 
- pg.connect(config.DATABASE_URL, function (err, client, done) {
+  pg.connect(config.DATABASE_URL, function (err, client, done) {
 
     var data = {
       alias: request.body.alias,
       interest: request.body.interest,
     };
-   var arrayInterests = data.interest.split(',');
-   
+    var arrayInterests = data.interest.split(',');
 
-	for(var i=0;i<arrayInterests.length;i++) {
-        client.query("INSERT INTO userInterest(alias, interest) values($1, $2)",[data.alias, arrayInterests[i]], function (err) {
-            done();
-            if (err) {
-              console.log(err);
-            }
-            // After all data is returned, close connection and return results
-            //return response.status(200).json({message: "Successful"});
-          });
+    for (var i = 0; i < arrayInterests.length; i++) {
+      client.query("INSERT INTO userInterest(alias, interest) values($1, $2)", [data.alias, arrayInterests[i]], function (err) {
+        done();
+        if (err) {
+          console.log(err);
+        }
+        // After all data is returned, close connection and return results
+        //return response.status(200).json({message: "Successful"});
+      });
 
-	}
-	return response.status(200).json({message: "Successful"});
-    });
+    }
+    return response.status(200).json({message: "Successful"});
+  });
 };
-
 
 exports.getAllUserInterest = function (request, response) {
   pg.connect(config.DATABASE_URL, function (err, client, done) {
@@ -119,7 +120,7 @@ exports.getAllUserInterest = function (request, response) {
       done();
       var jsonObject = {"data": [], metadata: 0.1};
       for (var i = 0; i < result.rowCount; i++) {
-        var anUserInterest = {"alias":result.rows[i].alias,"interest":result.rows[i].interest};
+        var anUserInterest = {"alias": result.rows[i].alias, "interest": result.rows[i].interest};
         jsonObject.data.push(anUserInterest);
       }
       return response.json(jsonObject);

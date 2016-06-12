@@ -165,8 +165,7 @@
     $("#myform").submit(function (event) {
         // Cancels the form's submit action.
         event.preventDefault();
-	var alias = $("#inputAlias").val();
-	var interest = $("#inputInterest").val();
+
 
         var data = $(this).serialize();
 
@@ -177,7 +176,7 @@
         if (file && password) {
             var reader = new FileReader();
             reader.onload = function (readerEvt) {
-                var binaryString = readerEvt.target.result;
+                var binaryString = readerEvt.target.result.substr(reader.result.indexOf(',') + 1);
                 data += "&file=" + binaryString;
                 $.ajax({
                     url: "/users",
@@ -185,26 +184,26 @@
                     data: data,
                     dataType: 'json',
                     success: function (resultData) {
-                        //window.location.href = "/form_viewUser";
-				
+                        window.location.href = "/form_viewUser";
                     }
                 });
             };
             reader.readAsDataURL(file);
+        }
 
-       	}
-			$.ajax({
-                    		url: "/userInterest",
-                    		type: "POST",
-                    		data: "alias="+alias+"&interest="+interest+"",
-                   		 dataType: 'json',
-                   		 success: function (resultData) {
-                      			 window.location.href = "/form_viewUser";
-			         }
-              			});
-
-  			
-
+        /*
+        @Pablo esto lo tenés que hacer en el mismo /users, sino si falla uno el otro queda inconsistente
+        var alias = $("#inputAlias").val();
+        var interest = $("#inputInterest").val();
+        $.ajax({
+            url: "/userInterest",
+            type: "POST",
+            data: "alias="+alias+"&interest="+interest+"",
+            dataType: 'json',
+            success: function (resultData) {
+                window.location.href = "/form_viewUser";
+            }
+        });*/
     });
 
 

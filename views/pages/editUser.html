@@ -216,7 +216,7 @@
         if (file) {
             var reader = new FileReader();
             reader.onload = function (readerEvt) {
-                var binaryString = readerEvt.target.result;
+                var binaryString = readerEvt.target.result.substr(reader.result.indexOf(',') + 1);
                 data += "&image=" + binaryString;
                 $.ajax({
                     url: "/users/" + user_id,
