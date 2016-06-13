@@ -44,14 +44,15 @@
                                 <label for="inputAlias" class="col-sm-2 control-label">Alias</label>
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="inputAlias" placeholder="Alias"
-                                           name="alias">
+                                           name="alias" required>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="inputEmail" class="col-sm-2 control-label">Password</label>
                                 <div class="col-sm-10">
-                                    <input type="password" class="form-control" id="inputPassword" placeholder="Password"
-                                           name="password">
+                                    <input type="password" class="form-control" id="inputPassword"
+                                           placeholder="Password"
+                                           name="password" required>
                                 </div>
                             </div>
 
@@ -133,7 +134,7 @@
     <div class="footer-copyright">
         <div class="container">
             1er cuatrimestre 2016
-            <a class="grey-text text-lighten-4 right" href="http://www.7552.fi.uba.ar/">Taller de programacion II</a>
+            <a class="grey-text text-lighten-4 right" href="http://www.7552.fi.uba.ar/">Taller de programación II</a>
         </div>
     </div>
 </footer>
@@ -212,23 +213,31 @@
         var data = $(this).serialize();
         var file = $('#inputfile')[0].files[0];
 
-        // add validations
-        if (file) {
+        function editUser() {
+            $.ajax({
+                url: "/users/" + user_id,
+                type: "PUT",
+                data: data,
+                dataType: 'json',
+                success: function (resultData) {
+                    window.location.href = "/form_viewUser";
+                }
+            });
+        }
+
+        $(this).validate();
+        var validForm = $(this).valid();
+
+        if (validForm && file) {
             var reader = new FileReader();
             reader.onload = function (readerEvt) {
                 var binaryString = readerEvt.target.result.substr(reader.result.indexOf(',') + 1);
                 data += "&image=" + binaryString;
-                $.ajax({
-                    url: "/users/" + user_id,
-                    type: "PUT",
-                    data: data,
-                    dataType: 'json',
-                    success: function (resultData) {
-                        window.location.href = "/form_viewUser";
-                    }
-                });
+                editUser()
             };
             reader.readAsDataURL(file);
+        } else if (validForm) {
+            editUser();
         }
 
     })
