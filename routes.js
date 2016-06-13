@@ -10,7 +10,7 @@ exports = module.exports = function(app) {
 	app.get('/users', require('./api/user').getAll);
 	app.post('/users', require('./api/user').create);
 	app.put('/users/:id', require('./api/user').update);
-	app.delete('/users/:alias', require('./api/user').delete);
+	app.delete('/users/:id', require('./api/user').delete);
 	app.get('/interests', require('./api/interest').getAll);
 	app.post('/interests', require('./api/interest').create);
 	app.delete('/interests/:id', require('./api/interest').delete);
@@ -21,9 +21,6 @@ exports = module.exports = function(app) {
 	app.get('/form_editUser', require('./api/user').form_editUser);
 	app.get('/form_newInterest', require('./api/user').form_newInterest);
 	app.get('/form_viewInterests', require('./api/user').form_viewInterests);
-	//U-I
 	app.get('/form_viewUserInterest', require('./api/user').form_viewUserInterest);
 	app.get('/userInterest', require('./api/user').getAllUserInterest);
-	app.post('/userInterest', require('./api/user').createUserInterest);
-	app.delete('/userInterest/:alias', require('./api/user').deleteUserInterest);
 };

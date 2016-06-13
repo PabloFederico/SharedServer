@@ -99,7 +99,7 @@
                     var interests = user.interests;
                     var latitude = user.location.latitude;
                     var longitude = user.location.longitude;
-                    $("#tabla").append('<tr><td>' + id + '</td><td>' + name + '</td><td>' + alias + '</td><td>' + sexo + '</td><td>' + edad + '</td><td>' + email + '</td><td>' + latitude + '</td><td>' + longitude + '</td><td>' + interests + '</td><td><button type="button" id="editar" class="btn btn-success" onclick="toEdit(\'' + id + '\')"><i class="material-icons">mode_edit</i></button></td><td><button type="button" id="eliminar" class="btn btn-warning" onclick="toDelete(\'' + alias + '\')"><i class="material-icons">delete</i></button></td></tr>');
+                    $("#tabla").append('<tr><td>' + id + '</td><td>' + name + '</td><td>' + alias + '</td><td>' + sexo + '</td><td>' + edad + '</td><td>' + email + '</td><td>' + latitude + '</td><td>' + longitude + '</td><td>' + interests + '</td><td><button type="button" id="editar" class="btn btn-success" onclick="toEdit(\'' + id + '\')"><i class="material-icons">mode_edit</i></button></td><td><button type="button" id="eliminar" class="btn btn-warning" onclick="toDelete(\'' + id + '\')"><i class="material-icons">delete</i></button></td></tr>');
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -112,17 +112,15 @@
         window.location.href = '/form_editUser?=' + id;
     }
 
-    function toDelete(alias) {
+    function toDelete(id) {
         $.ajax({
-            url: '/users/' + alias,
-            type: 'DELETE'
+            url: '/users/' + id,
+            type: 'DELETE',
+            success: function(data) {
+            	alert("Usuario borrado satisfactoriamente");
+        			window.location.href = "/form_viewUser";
+            }
         });
- 	$.ajax({
-            url: '/userInterest/' + alias,
-            type: 'DELETE'
-        });
-        alert("Usuario borrado satisfactoriamente");
-        window.location.href = "/form_viewUser";
     }
 </script>
 </body>

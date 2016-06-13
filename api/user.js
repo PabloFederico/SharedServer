@@ -6,11 +6,6 @@ var config = require('../config');
 var utils = require('../utils');
 
 function createUserFromResult(result, index) {
-
-  if (!index) {
-    index = 0;
-  }
-
   return {
     user: {
       id: result.rows[index].id,
@@ -42,8 +37,10 @@ exports.login = function (request, response) {
 
 exports.create = function (request, response) {
   pg.connect(config.DATABASE_URL, function (err, client, done) {
-
     var encryptedPassword = utils.encryptPassword(request.body.password);
+    var photo_profile_base64 = request.body.file.replace(/ /g, '+');
+    var userId = '';
+    console.log(request.body.interests);
     var data = {
       name: request.body.name,
       alias: request.body.username,
@@ -54,7 +51,7 @@ exports.create = function (request, response) {
       age: request.body.age,
       latitude: request.body.latitude,
       longitude: request.body.longitude,
-      file: request.body.file
+      photo_profile: photo_profile_base64
     };
 
     client.query("SELECT * FROM users WHERE alias = ($1)", [data.alias], function (err, result) {
@@ -62,52 +59,55 @@ exports.create = function (request, response) {
         console.log('username already taken');
         return response.status(400).json({error: "Username already taken"});
       } else {
-
-        var password = crypto.createHash('sha256').update(data.password).digest('base64');
-        var image = data.file.replace(/ /g, '+')
-
-        client.query("INSERT INTO users(name, alias, password, email, interests, sex, age, latitude, longitude, image)" +
-          " values($1, $2, $3, $4, $5, $6, $7, $8, $9,$10)",
-          [data.name, data.alias, password, data.email, data.interests, data.sex, data.age
-            , data.latitude, data.longitude, image]
-          , function (err) {
-            done();
+        client.query("INSERT INTO users(name, alias, password, email, interests, sex, age, latitude, longitude, photo_profile)" +
+          " values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)", [data.name, data.alias, data.password, data.email, data.interests, data.sex, data.age, data.latitude, data.longitude, data.photo_profile], function (err, result) {
             if (err) {
               console.log(err);
+            } else {
+              client.query("SELECT * FROM users WHERE alias = ($1)", [data.alias], function(err, result) {
+                userId = result.rows[0].id;
+                for (var i = 0; i < request.body.interests.length; i++) {
+                  client.query("SELECT * FROM interests WHERE value = ($1)", [request.body.interests[i]], function(err, result) {
+                    if (result.rowCount) {
+                      client.query("INSERT INTO userInterests(userId, interestId) values($1, $2)", [userId, result.rows[0].id], function(err, result) {
+                        done();
+                        if (err) {
+                          console.log(err);
+                        }
+                      });
+                    }
+                  });
+                }
+                // After all data is returned, close connection and return results
+                return response.status(200).json({message: "Successful signup"});
+              });
             }
-            // After all data is returned, close connection and return results
-            return response.status(200).json({message: "Successful signup"});
-          });
+        });
       }
     });
   });
 };
 
-//User-interest------------------------------------------------------
-exports.createUserInterest = function (request, response) {
-
-  pg.connect(config.DATABASE_URL, function (err, client, done) {
-
-    var data = {
-      alias: request.body.alias,
-      interest: request.body.interest,
-    };
-    var arrayInterests = data.interest.split(',');
-
-    for (var i = 0; i < arrayInterests.length; i++) {
-      client.query("INSERT INTO userInterest(alias, interest) values($1, $2)", [data.alias, arrayInterests[i]], function (err) {
-        done();
-        if (err) {
-          console.log(err);
-        }
-        // After all data is returned, close connection and return results
-        //return response.status(200).json({message: "Successful"});
-      });
-
-    }
-    return response.status(200).json({message: "Successful"});
-  });
-};
+// exports.createUserInterest = function (request, response) {
+//   pg.connect(config.DATABASE_URL, function (err, client, done) {
+//     var data = {
+//       alias: request.body.alias,
+//       interest: request.body.interest,
+//     };
+//     var arrayInterests = data.interest.split(',');
+//     for (var i = 0; i < arrayInterests.length; i++) {
+//       client.query("INSERT INTO userInterest(alias, interest) values($1, $2)", [data.alias, arrayInterests[i]], function (err) {
+//         done();
+//         if (err) {
+//           console.log(err);
+//         }
+//         // After all data is returned, close connection and return results
+//         //return response.status(200).json({message: "Successful"});
+//       });
+//     }
+//     return response.status(200).json({message: "Successful"});
+//   });
+// };
 
 exports.getAllUserInterest = function (request, response) {
   pg.connect(config.DATABASE_URL, function (err, client, done) {
@@ -131,43 +131,19 @@ exports.getAllUserInterest = function (request, response) {
   });
 };
 
-exports.deleteUserInterest = function (request, response) {
-  pg.connect(config.DATABASE_URL, function (err, client, done) {
-    client.query("DELETE FROM userInterest WHERE alias = ($1)", [request.params.alias], function (err, result) {
-      done();
-      if (err) {
-        console.log(err);
-        response.sendStatus(500);
-      } else {
-        response.sendStatus(200);
-      }
-    });
-  });
-};
-
-//------------------------------------------------------------------------------------
-
 exports.update = function (request, response) {
   var updateQuery = [];
-
   var keys = _.keys(request.body);
-
   for (var i = 0; i < keys.length; i++) {
-
     var keyValue = request.body[keys[i]];
-
     if (keys[i] == "password") {
       keyValue = crypto.createHash('sha256').update(keyValue).digest('base64');
     } else if (keys[i] == "image") {
       keyValue = keyValue.replace(/ /g, '+')
     }
-
     updateQuery[i] = " " + keys[i] + " = '" + keyValue + "'";
-
   }
-
   updateQuery = updateQuery.join();
-
   pg.connect(config.DATABASE_URL, function (err, client, done) {
     client.query("UPDATE users SET" + updateQuery + " WHERE id = ($1)", [request.params.id], function (err, result) {
       done();
@@ -182,34 +158,37 @@ exports.update = function (request, response) {
 
 exports.delete = function (request, response) {
   pg.connect(config.DATABASE_URL, function (err, client, done) {
-    client.query("DELETE FROM users WHERE alias = ($1)", [request.params.alias], function (err, result) {
-      done();
+    client.query("DELETE FROM users WHERE id = ($1)", [request.params.id], function (err, result) {
       if (err) {
         console.log(err);
         response.sendStatus(500);
       } else {
-        response.sendStatus(200);
+        client.query("DELETE FROM userInterests WHERE userId = ($1)", [request.params.id], function (err, result) {
+          done();
+          if (err) {
+            console.log(err);
+            response.sendStatus(500);
+          } else {
+            response.sendStatus(200);
+          }
+        });
       }
     });
   });
 };
 
 exports.get = function (request, response) {
-  var id = request.params.id;
   pg.connect(config.DATABASE_URL, function (err, client, done) {
-
-    var query = client.query("SELECT * FROM users WHERE id = ($1)", [id]);
-
+    var query = client.query("SELECT * FROM users WHERE id = ($1)", [request.params.id]);
     // Stream results back one row at a time
     query.on('row', function (row, result) {
       result.addRow(row);
     });
-
     // After all data is returned, close connection and return results
     query.on('end', function (result) {
       done();
       if (result.rowCount) {
-        return response.json(createUserFromResult(result));
+        return response.json(createUserFromResult(result, 0));
       } else {
         response.sendStatus(500);
       }
@@ -278,7 +257,7 @@ exports.getCandidate = function (request, response) {
         return response.status(400).json({error: "User not found in the database"});
       }
     });
-  });
+});
 };
 
 exports.form_newUser = function (request, response) {
@@ -304,4 +283,3 @@ exports.form_viewInterests = function (request, response) {
 exports.form_viewUserInterest = function (request, response) {
   response.render('viewUserInterest.html');
 };
-
