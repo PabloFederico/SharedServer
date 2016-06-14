@@ -22,5 +22,5 @@ exports = module.exports = function(app) {
 	app.get('/form_newInterest', require('./api/user').form_newInterest);
 	app.get('/form_viewInterests', require('./api/user').form_viewInterests);
 	app.get('/form_viewUserInterest', require('./api/user').form_viewUserInterest);
-	app.get('/userInterest', require('./api/user').getAllUserInterest);
+	//app.get('/userInterest', require('./api/user').getAllUserInterest);
 };
