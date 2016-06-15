@@ -14,13 +14,12 @@ function UserService() {
       email: data.email,
       sex: data.sex,
       age: data.age,
-      photo_profile: 'base_64',
+      photo_profile: encodeURI(data.photo_profile),
       interests: data.interests,
       location: {
         latitude: data.latitude,
         longitude: data.longitude
-      },
-      file: data.photo_profile
+      }
     };
   };
   this.populateUserInterests = function (data) {
@@ -143,14 +142,11 @@ UserService.prototype.getAll = function (next) {
     // After all data is returned, close connection and return results
     query.on('end', function (result) {
       var jsonObject = {"users": [], metadata: {version: 0.1, count: result.rowCount}};
-      var count = result.rowCount;
       _.each(result.rows, function (user) {
         that.populateUserInterests(user).then(function (data) {
           jsonObject.users.push(that.createUserFromResult(data));
-          count--;
-          if (count == 0) {
-            next(null, jsonObject);
-          }
+        }).then(function () {
+          next(null, jsonObject);
         });
       });
     });
@@ -160,9 +156,9 @@ UserService.prototype.getAll = function (next) {
 UserService.prototype.getCandidate = function (alias, next) {
   var that = this;
   pg.connect(config.DATABASE_URL, function (err, client, done) {
-    var query = client.query("SELECT * FROM userinterests iu, users u" +
-    " WHERE u.alias= ($1)" +
-    " and iu.userid <> u.id" +
+    var query = client.query("SELECT DISTINCT * FROM userinterests iu, users u" +
+    " WHERE u.alias <> ($1)" +
+    " and iu.userid = u.id" +
     " and iu.interestid " +
     " IN (SELECT iu2.interestid FROM userinterests iu2 WHERE iu2.userid = u.id)", [alias], function (err, result) {
 
@@ -175,13 +171,15 @@ UserService.prototype.getCandidate = function (alias, next) {
       query.on('end', function (result) {
         var jsonObject = {"users": [], metadata: {version: 0.1}};
         _.each(result.rows, function (user) {
-          if (result.rowCount) {
-            jsonObject.users.push(that.createUserFromResult(user));
-          }
+          //todo acá falta filtrar por la localización
+          that.populateUserInterests(user).then(function (data) {
+            jsonObject.users.push(that.createUserFromResult(data));
+          }).then(function () {
+            jsonObject.metadata.count = jsonObject.users.length;
+            done();
+            next(null, jsonObject);
+          })
         });
-        jsonObject.metadata.count = jsonObject.users.length;
-        done();
-        next(null, jsonObject);
       });
     });
   });
