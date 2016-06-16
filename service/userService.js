@@ -26,23 +26,21 @@ function UserService() {
 
   this.populateUserInterests = function (data) {
     var deferred = Q.defer();
-    deferred.resolve(data);
+
     pg.connect(config.DATABASE_URL, function (err, client, done) {
       data.interests = "";
       client.query("SELECT * FROM userInterests ui, interests i" +
       " WHERE userId = ($1)", [data.id], function (err, result) {
+        done();
         if (result.rowCount > 0) {
-          deferred.promise.then(function () {
-            _.each(result.rows, function (user) {
-              data.interests += user.category + '-' + user.value + ' , ';
-            });
-          }).then(function () {
-            done();
-            data.interests = data.interests.substr(0, data.interests.length - 2);
+          _.each(result.rows, function (user) {
+            data.interests += user.category + '-' + user.value + ' , ';
           });
+          data.interests = data.interests.substr(0, data.interests.length - 2);
         }
       });
     });
+    deferred.resolve(data);
     return deferred.promise;
   };
 }
@@ -139,17 +137,18 @@ UserService.prototype.getAll = function (next) {
     });
     // After all data is returned, close connection and return results
     query.on('end', function (result) {
+      done();
       var jsonObject = {"users": [], metadata: {version: 0.1, count: result.rowCount}};
-      var count = result.rowCount;
+      var promises = [];
       _.each(result.rows, function (user) {
-        that.populateUserInterests(user).then(function (data) {
+        var promise = that.populateUserInterests(user).then(function (data) {
           jsonObject.users.push(that.createUserFromResult(data));
-          count--;
-          if (count == 0) {
-            done();
-            next(null, jsonObject);
-          }
-        })
+        });
+        promises.push(promise);
+      });
+
+      Q.all(promises).then(function () {
+        next(null, jsonObject);
       });
     });
   });
@@ -171,19 +170,20 @@ UserService.prototype.getCandidate = function (alias, next) {
 
       // After all data is returned, close connection and return results
       query.on('end', function (result) {
+        done();
         var jsonObject = {"users": [], metadata: {version: 0.1}};
-        var count = result.rowCount;
+        var promises = [];
         _.each(result.rows, function (user) {
           //todo acá falta filtrar por la localización
-          that.populateUserInterests(user).then(function (data) {
+          var promise = that.populateUserInterests(user).then(function (data) {
             jsonObject.users.push(that.createUserFromResult(data));
-            count--;
-            if (count == 0) {
-              jsonObject.metadata.count = jsonObject.users.length;
-              done();
-              next(null, jsonObject);
-            }
-          })
+          });
+          promises.push(promise);
+        });
+
+        Q.all(promises).then(function () {
+          jsonObject.metadata.count = jsonObject.users.length;
+          next(null, jsonObject);
         });
       });
     });
