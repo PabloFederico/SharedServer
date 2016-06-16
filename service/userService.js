@@ -44,6 +44,19 @@ function UserService() {
 
     return deferred.promise;
   };
+
+  this.insertUserInterest = function (interest) {
+    var deferred = Q.defer();
+    pg.connect(config.DATABASE_URL, function (err, client, done) {
+      client.query("SELECT * FROM interests WHERE value = ($1)", [interest.split('-')[1]], function (err, result) {
+        client.query("INSERT INTO userInterests(userId, interestId) values($1, $2)", [response.id, result.rows[0].id], function (err, result) {
+          done();
+          deferred.resolve();
+        });
+      });
+    });
+    return deferred.promise;
+  };
 }
 
 UserService.prototype.byAlias = function (alias) {
@@ -98,6 +111,7 @@ UserService.prototype.create = function (data, next) {
       //Create user
       client.query("INSERT INTO users(name, alias, password, email, sex, age, latitude, longitude, photo_profile)" +
       " values($1, $2, $3, $4, $5, $6, $7, $8, $9)", user, function (err, result) {
+        done();
         if (err) {
           console.log(err);
           next({message: ""}, null);
@@ -108,21 +122,14 @@ UserService.prototype.create = function (data, next) {
             if (!_.isArray(data.interests)) {
               data.interests = [data.interests];
             }
-            var count = data.interests.length;
-
+            var promises = [];
             //Create user associated interests
             _.each(data.interests, function (interest) {
-              client.query("SELECT * FROM interests WHERE value = ($1)", [interest.split('-')[1]], function (err, result) {
-                if (result.rowCount) {
-                  client.query("INSERT INTO userInterests(userId, interestId) values($1, $2)", [response.id, result.rows[0].id], function (err, result) {
-                    count--;
-                    if (count == 0) {
-                      done();
-                      next(null, {});
-                    }
-                  });
-                }
-              });
+              var promise = this.insertUserInterest(interest);
+              promises.push(promise);
+            });
+            Q.all(promises).then(function () {
+              next(null, {});
             });
           });
         }
