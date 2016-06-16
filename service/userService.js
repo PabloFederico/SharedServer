@@ -7,7 +7,6 @@ var config = require('../config');
 
 function UserService() {
 
-  //fixme incluir la foto acá lo hace super lento, hay que poner un booleano y traer el photo_profile solo cuando hace falta
   this.createUserFromResult = function (data) {
     return {
       id: data.id,
@@ -24,26 +23,23 @@ function UserService() {
       }
     };
   };
+
   this.populateUserInterests = function (data) {
     var deferred = Q.defer();
+    deferred.resolve(data);
     pg.connect(config.DATABASE_URL, function (err, client, done) {
       data.interests = "";
-      client.query("SELECT * FROM userInterests WHERE userId = ($1)", [data.id], function (err, result) {
+      client.query("SELECT * FROM userInterests ui, interests i" +
+      " WHERE userId = ($1)", [data.id], function (err, result) {
         if (result.rowCount > 0) {
-          var count = result.rowCount;
-          _.each(result.rows, function (user) {
-            client.query("SELECT * FROM interests WHERE id = ($1)", [user.interestid], function (err, result) {
-              data.interests += result.rows[0].category + '-' + result.rows[0].value + ' , ';
-              count--;
-              if (count == 0) {
-                done();
-                data.interests = data.interests.substr(0, data.interests.length - 2);
-                deferred.resolve(data);
-              }
+          deferred.promise.then(function () {
+            _.each(result.rows, function (user) {
+              data.interests += user.category + '-' + user.value + ' , ';
             });
+          }).then(function () {
+            done();
+            data.interests = data.interests.substr(0, data.interests.length - 2);
           });
-        } else {
-          deferred.resolve(data);
         }
       });
     });
