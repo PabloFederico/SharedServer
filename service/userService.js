@@ -38,9 +38,10 @@ function UserService() {
           });
           data.interests = data.interests.substr(0, data.interests.length - 2);
         }
+        deferred.resolve(data);
       });
     });
-    deferred.resolve(data);
+
     return deferred.promise;
   };
 }
@@ -94,6 +95,7 @@ UserService.prototype.create = function (data, next) {
       var user = [data.name || null, data.username || null, encryptedPassword, data.email || null, data.sex || null, data.age
       || null, data.latitude || null, data.longitude || null, photo_profile_base64];
 
+      //Create user
       client.query("INSERT INTO users(name, alias, password, email, sex, age, latitude, longitude, photo_profile)" +
       " values($1, $2, $3, $4, $5, $6, $7, $8, $9)", user, function (err, result) {
         if (err) {
@@ -107,6 +109,8 @@ UserService.prototype.create = function (data, next) {
               data.interests = [data.interests];
             }
             var count = data.interests.length;
+
+            //Create user associated interests
             _.each(data.interests, function (interest) {
               client.query("SELECT * FROM interests WHERE value = ($1)", [interest.split('-')[1]], function (err, result) {
                 if (result.rowCount) {
