@@ -217,6 +217,7 @@ UserService.prototype.update = function (userId, data, next) {
 
   pg.connect(config.DATABASE_URL, function (err, client, done) {
     client.query("UPDATE users SET" + updateQuery + " WHERE id = ($1)", [userId], function (err, result) {
+      done();
       if (err) {
         next(err);
         console.log('ERROR');
@@ -229,13 +230,14 @@ UserService.prototype.update = function (userId, data, next) {
 };
 
 UserService.prototype.delete = function (userId, next) {
+  //fixme do this in a transaction https://github.com/brianc/node-postgres/wiki/Transactions
   pg.connect(config.DATABASE_URL, function (err, client, done) {
-    client.query("DELETE FROM users WHERE id = ($1)", [userId], function (err, result) {
+    client.query("DELETE FROM userInterests WHERE userId = ($1)", [userId], function (err, result) {
       if (err) {
         console.log(err);
         next(err);
       } else {
-        client.query("DELETE FROM userInterests WHERE userId = ($1)", [userId], function (err, result) {
+        client.query("DELETE FROM users WHERE id = ($1)", [userId], function (err, result) {
           done();
           if (err) {
             console.log(err);
