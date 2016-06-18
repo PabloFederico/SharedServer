@@ -57,7 +57,9 @@ function UserService() {
   this.insertUserInterest = function (userId, interest) {
     var deferred = Q.defer();
     pg.connect(config.DATABASE_URL, function (err, client, done) {
-      client.query("SELECT * FROM interests WHERE value = ($1)", [interest.split('-')[1]], function (err, result) {
+      client.query("SELECT id FROM interests " +
+      " WHERE category = ($1) " +
+      " AND value = ($2) ", [interest.split('-')[0], interest.split('-')[1]], function (err, result) {
         client.query("INSERT INTO userInterests(userId, interestId) values($1, $2)", [userId, result.rows[0].id], function (err, result) {
           done();
           deferred.resolve();
@@ -66,6 +68,23 @@ function UserService() {
     });
     return deferred.promise;
   };
+
+  this.deleteUserInterests = function (userId, interest) {
+    var deferred = Q.defer();
+    pg.connect(config.DATABASE_URL, function (err, client, done) {
+      client.query("SELECT id FROM interests " +
+      " WHERE category = ($1) " +
+      " AND value = ($2) ", [interest.split('-')[0], interest.split('-')[1]], function (err, result) {
+        client.query("DELETE FROM userInterests " +
+        " WHERE userId= ($!)" +
+        " AND interestId = ($2)", [userId, result.rows[0].id], function (err, result) {
+          done();
+          deferred.resolve();
+        });
+      });
+    });
+    return deferred.promise;
+  }
 }
 
 UserService.prototype.byAlias = function (alias) {
@@ -94,6 +113,7 @@ UserService.prototype.get = function (userId, next) {
     });
     // After all data is returned, close connection and return results
     query.on('end', function (result) {
+      done();
       if (result.rowCount) {
         that.populateUserInterests(result.rows[0]).then(function (data) {
           next(null, data);
@@ -213,8 +233,7 @@ UserService.prototype.getCandidate = function (alias, next) {
 UserService.prototype.update = function (userId, data, next) {
   var updateQuery = [];
 
-  //keep interests
-  var interests=data.interests;
+  var interestsArray = data.interests;
   delete(data.interests);
 
   var keys = Object.keys(data);
@@ -227,6 +246,8 @@ UserService.prototype.update = function (userId, data, next) {
 
   updateQuery = updateQuery.join();
 
+  var that = this;
+
   pg.connect(config.DATABASE_URL, function (err, client, done) {
     client.query("UPDATE users SET" + updateQuery + " WHERE id = ($1)", [userId], function (err, result) {
       done();
@@ -234,8 +255,28 @@ UserService.prototype.update = function (userId, data, next) {
         next(err);
         console.log(err);
       } else {
-        // TODO Update interests
+
+        //todo test this
+        //client.query("SELECT * FROM userInterests" +
+        //" WHERE  userId= ($1)", [userId], function (err, result) {
+        //  var interestsToInsert = _.difference(interestsArray, result.rows);
+        //  var interestsToDelete = _.difference(result.rows, interestsArray);
+        //
+        //  var promises = [];
+        //
+        //  _.each(interestsToInsert, function (interest) {
+        //    promises.push(that.insertUserInterest(userId, interest));
+        //  });
+        //
+        //  _.each(interestsToDelete, function (interest) {
+        //    promises.push(that.deleteUserInterests(userId, interest));
+        //  });
+        //
+        //});
+
+        //Q.all(promises).then(function () {
         next(null, {});
+        //});
       }
     });
   });
