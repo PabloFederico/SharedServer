@@ -21,3 +21,11 @@
   .btn {
 	  background-color: #EE6E73;
   }
+
+  .breadcrumb {
+    background-color: transparent;
+  }
+
+  .card-content .panel-default {
+    overflow-x: auto;
+  }
