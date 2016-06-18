@@ -227,8 +227,6 @@ UserService.prototype.update = function (userId, data, next) {
 
   updateQuery = updateQuery.join();
 
-  console.log(updateQuery);
-
   pg.connect(config.DATABASE_URL, function (err, client, done) {
     client.query("UPDATE users SET" + updateQuery + " WHERE id = ($1)", [userId], function (err, result) {
       done();
