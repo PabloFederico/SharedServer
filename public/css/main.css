@@ -30,6 +30,15 @@
     overflow-x: auto;
   }
 
+#tabla {
+  table-layout:fixed;
+}
+
+#tabla td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
  #locationPicker {
     margin-right: 15px;
     margin-left: 15px;
@@ -45,4 +54,8 @@
 #filePicker {
     margin-bottom: 50px;
     margin-top: 50px;
+}
+
+.table-page .container {
+  width: 90%;
 }
