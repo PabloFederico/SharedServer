@@ -7,21 +7,27 @@ var config = require('../config');
 
 function UserService() {
 
-  this.createUserFromResult = function (data) {
-    return {
+  this.createUserFromResult = function (data, withPhoto) {
+
+    var user = {
       id: data.id,
       name: data.name,
       alias: data.alias,
       email: data.email,
       gender: data.gender,
       age: data.age,
-      photo_profile: encodeURI(data.photo_profile),
       interests: data.interests,
       location: {
         latitude: data.latitude,
         longitude: data.longitude
       }
     };
+
+    if (withPhoto) {
+      user.photo_profile = encodeURI(data.photo_profile);
+    }
+
+    return user;
   };
 
   this.populateUserInterests = function (user) {
@@ -30,7 +36,7 @@ function UserService() {
     pg.connect(config.DATABASE_URL, function (err, client, done) {
       user.interests = "";
 
-      client.query("SELECT * FROM userInterests ui, interests i, users u " +
+      client.query("SELECT i.category, i.value, u.id FROM userInterests ui, interests i, users u " +
       " WHERE u.id = ($1)" +
       " AND ui.userId=u.id" +
       " AND i.id=ui.interestId", [user.id], function (err, result) {
@@ -144,7 +150,7 @@ UserService.prototype.create = function (data, next) {
 UserService.prototype.getAll = function (next) {
   var that = this;
   pg.connect(config.DATABASE_URL, function (err, client, done) {
-    var query = client.query("SELECT * FROM users ORDER BY id ASC;");
+    var query = client.query("SELECT id,name,alias,email,gender,age,latitude,longitude FROM users ORDER BY id ASC;");
     // Stream results back one row at a time
     query.on('row', function (row, result) {
       result.addRow(row);
@@ -156,7 +162,7 @@ UserService.prototype.getAll = function (next) {
       var promises = [];
       _.each(result.rows, function (user) {
         var promise = that.populateUserInterests(user).then(function (data) {
-          jsonObject.users.push(that.createUserFromResult(data));
+          jsonObject.users.push(that.createUserFromResult(data, false));
         });
         promises.push(promise);
       });
@@ -190,7 +196,7 @@ UserService.prototype.getCandidate = function (alias, next) {
         _.each(result.rows, function (user) {
           //todo acá falta filtrar por la localización
           var promise = that.populateUserInterests(user).then(function (data) {
-            jsonObject.users.push(that.createUserFromResult(data));
+            jsonObject.users.push(that.createUserFromResult(data, true));
           });
           promises.push(promise);
         });

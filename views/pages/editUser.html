@@ -10,19 +10,15 @@
     <nav class="main-navigator">
         <div class="nav-wrapper">
             <a href="#" class="brand-logo">MatchApp</a>
-            <ul id="nav-mobile" class="right">
-                <li class="active"><a href="/form_viewUser">Usuarios</a></li>
+            <a href="#" data-activates="mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="/form_viewUser">Usuarios</a></li>
                 <li><a href="/form_viewInterests">Intereses</a></li>
             </ul>
-        </div>
-    </nav>
-    <nav class="breadcrumbs">
-        <div class="nav-wrapper">
-            <div class="col s12">
-                <a href="/" class="breadcrumb">Home</a>
-                <a href="/form_viewUser" class="breadcrumb">Usuarios</a>
-                <a href="#" class="breadcrumb">Editar Usuario</a>
-            </div>
+            <ul class="side-nav" id="mobile" style="transform: translateX(-100%);">
+                <li><a href="/form_viewUser">Usuarios</a></li>
+                <li><a href="/form_viewInterests">Intereses</a></li>
+            </ul>
         </div>
     </nav>
 </header>

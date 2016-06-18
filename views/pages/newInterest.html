@@ -1,114 +1,113 @@
 <html>
-	<head>
-		<title>Alta de interés</title>
-		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-		<link type="text/css" rel="stylesheet" href="/css/materialize.css">
-		<link type="text/css" rel="stylesheet" href="/css/main.css">
-	</head>
-	<body>
-		<header>
-			<nav class="main-navigator">
-				<div class="nav-wrapper">
-					<a href="#" class="brand-logo">MatchApp</a>
-					<ul id="nav-mobile" class="right">
-						<li><a href="/form_viewUser">Usuarios</a></li>
-						<li class="active"><a href="/form_viewInterests">Intereses</a></li>
-					</ul>
-				</div>
-			</nav>
-			<nav class="breadcrumbs">
-				<div class="nav-wrapper">
-					<div class="col s12">
-						<a href="/" class="breadcrumb">Home</a>
-						<a href="/form_viewInterests" class="breadcrumb">Intereses</a>
-						<a href="/form_newInterest" class="breadcrumb">Alta interés</a>
-					</div>
-				</div>
-			</nav>
-		</header>
-		<main>
-			<div class="container">
-				<h2 class="header center-align">Alta de interés</h2>
-				<div class="row">
-					<div class="col s12 m12">
-						<div class="card">
-							<div class="card-content">
-								<form class="form-horizontal" action="/interests" method="post">
-									<div class="form-group">
-										<label for="inputNombre" class="col-sm-2 control-label">Category</label>
-										<div class="col-sm-10">
-											<input type="text" class="form-control" id="inputNombre" placeholder="Nombre" name="category" required/>
-										</div>
-									</div>
-									<div class="form-group">
-										<label for="inputValue" class="col-sm-2 control-label">Value</label>
-										<div class="col-sm-10">
-											<input type="text" class="form-control" id="inputValue" placeholder="Value" name="value" required/>
-										</div>
-									</div>
-									<div class="form-group">
-										<div class="col-sm-offset-2 col-sm-10">
-											<button type="submit" class="btn btn-large">Enviar <i class="material-icons right">send</i></button>
-										</div>
-									</div>
-								</form>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</main>
-		<footer class="page-footer">
-			<div class="container">
-				<div class="row">
-					<div class="col l6 s12">
-						<h5 class="white-text">Grupo 10</h5>
-					</div>
-				</div>
-			</div>
-			<div class="footer-copyright">
-				<div class="container">
-					1er cuatrimestre 2016
-					<a class="grey-text text-lighten-4 right" href="http://www.7552.fi.uba.ar/">Taller de programación II</a>
-				</div>
-			</div>
-		</footer>
-		<script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
-		<script type="text/javascript"  src="/js/materialize.js"></script>
-		<script type="text/javascript">
-			$(document).ready(function(){
-				$.ajax({
-					url: "/interests",
-					type: "GET",
-					contentType: 'application/json; charset=utf-8',
-					success: function(resultData) {
-						for (var i = 0; i < resultData.interests.length; i++) {
-							var interest = resultData.interests[i];
-							var interestJson = interest.interest;
-							var id = interestJson.id;
-							var category = interestJson.category;
-							var value = interestJson.value;
-							$("#inputInterest").append('<option>'+category+'-'+value+'</option>');
-						}
-					},
-					error : function(jqXHR, textStatus, errorThrown) {
-					},
-					timeout: 120000,
-				});
-			});
-			$("#myform").submit(function(event) {
-	      // Cancels the form's submit action.
-	      event.preventDefault();
-	      $.ajax({
-	      	url: "/users",
-	      	type: "POST",
-	      	data: $(this).serialize(),
-	      	dataType: 'json',
-	      	success: function(resultData) {
-	      		window.location.href = "/form_viewUser";
-	      	}
-	      });
-	    });
-		</script>
-	</body>
+<head>
+    <title>Alta de interés</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="/css/materialize.css">
+    <link type="text/css" rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+<header>
+    <nav class="main-navigator">
+        <div class="nav-wrapper">
+            <a href="#" class="brand-logo">MatchApp</a>
+            <a href="#" data-activates="mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="/form_viewUser">Usuarios</a></li>
+                <li><a href="/form_viewInterests">Intereses</a></li>
+            </ul>
+            <ul class="side-nav" id="mobile" style="transform: translateX(-100%);">
+                <li><a href="/form_viewUser">Usuarios</a></li>
+                <li><a href="/form_viewInterests">Intereses</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+<main>
+    <div class="container">
+        <h2 class="header center-align">Alta de interés</h2>
+        <div class="row">
+            <div class="col s12 m12">
+                <div class="card">
+                    <div class="card-content">
+                        <form class="form-horizontal" action="/interests" method="post">
+                            <div class="form-group">
+                                <label for="inputNombre" class="col-sm-2 control-label">Category</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputNombre" placeholder="Nombre"
+                                           name="category" required/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputValue" class="col-sm-2 control-label">Value</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputValue" placeholder="Value"
+                                           name="value" required/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <button type="submit" class="btn btn-large">Enviar <i class="material-icons right">send</i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<footer class="page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="col l6 s12">
+                <h5 class="white-text">Grupo 10</h5>
+            </div>
+        </div>
+    </div>
+    <div class="footer-copyright">
+        <div class="container">
+            1er cuatrimestre 2016
+            <a class="grey-text text-lighten-4 right" href="http://www.7552.fi.uba.ar/">Taller de programación II</a>
+        </div>
+    </div>
+</footer>
+<script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="/js/materialize.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.ajax({
+            url: "/interests",
+            type: "GET",
+            contentType: 'application/json; charset=utf-8',
+            success: function (resultData) {
+                for (var i = 0; i < resultData.interests.length; i++) {
+                    var interest = resultData.interests[i];
+                    var interestJson = interest.interest;
+                    var id = interestJson.id;
+                    var category = interestJson.category;
+                    var value = interestJson.value;
+                    $("#inputInterest").append('<option>' + category + '-' + value + '</option>');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            },
+            timeout: 120000,
+        });
+    });
+    $("#myform").submit(function (event) {
+        // Cancels the form's submit action.
+        event.preventDefault();
+        $.ajax({
+            url: "/users",
+            type: "POST",
+            data: $(this).serialize(),
+            dataType: 'json',
+            success: function (resultData) {
+                window.location.href = "/form_viewUser";
+            }
+        });
+    });
+</script>
+</body>
 </html>
