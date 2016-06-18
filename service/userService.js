@@ -114,8 +114,8 @@ UserService.prototype.create = function (data, next) {
         next({message: "Username already taken"}, null);
       }
 
-      var user = [data.name || null, data.username || null, encryptedPassword, data.email || null, data.gender || null, data.age
-      || null, data.latitude || null, data.longitude || null, photo_profile_base64];
+      var user = [data.name, data.username, encryptedPassword, data.email, data.gender, data.age
+        , data.latitude, data.longitude, photo_profile_base64];
 
       //Create user
       client.query("INSERT INTO users(name, alias, password, email, gender, age, latitude, longitude, photo_profile)" +
@@ -212,24 +212,29 @@ UserService.prototype.getCandidate = function (alias, next) {
 
 UserService.prototype.update = function (userId, data, next) {
   var updateQuery = [];
-  var keys = _.keys(data);
-  data.photo_profile = keys["photo_profile"] ? data.photo_profile.replace(/ /g, '+') : null;
 
-  if (keys["interests"]) {
-    keys = _.without(keys, "interests");
-  }
+  //keep interests
+  var interests=data.interests;
+  delete(data.interests);
+
+  var keys = Object.keys(data);
+
+  data.photo_profile = data["photo_profile"] ? data.photo_profile.replace(/ /g, '+') : null;
 
   for (var i = 0; i < keys.length; i++) {
     updateQuery[i] = " " + keys[i] + " = '" + data[keys[i]] + "'";
   }
+
   updateQuery = updateQuery.join();
+
+  console.log(updateQuery);
 
   pg.connect(config.DATABASE_URL, function (err, client, done) {
     client.query("UPDATE users SET" + updateQuery + " WHERE id = ($1)", [userId], function (err, result) {
       done();
       if (err) {
         next(err);
-        console.log('ERROR');
+        console.log(err);
       } else {
         // TODO Update interests
         next(null, {});
