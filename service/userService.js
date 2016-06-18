@@ -131,6 +131,7 @@ UserService.prototype.create = function (data, next) {
     client.query("SELECT * FROM users WHERE alias = ($1)", [data.username], function (err, result) {
 
       if (result.rowCount) {
+        done();
         next({message: "Username already taken"}, null);
       }
 

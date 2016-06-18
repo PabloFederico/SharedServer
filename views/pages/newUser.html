@@ -109,19 +109,31 @@
                                 </div>
                             </div>
 
-                            <div id="filePicker" class="form-group">
-                                <label for="inputfile" class="col-sm-2 control-label">Imagen</label>
-                                <div class="col-sm-10">
-                                    <input type="file" class="form-control" id="inputfile" placeholder="file"
-                                           name="file" required/>
+                            <div id="filePicker" class="form-group col s12">
+
+
+                                <div class="col s12">
+                                    <img id="image" class="centered-and-cropped" src="/ic_user.png" alt="your image"/>
                                 </div>
-<img id="image" src="#" alt="your image" />
+
+                                <div class="col s12">
+                                    <div class="file-field input-field">
+                                        <div class="btn">
+                                            <span>Pick photo</span>
+                                            <input type="file" class="form-control" id="inputfile" placeholder="file"
+                                                   name="file" required/>
+                                        </div>
+                                        <div class="file-path-wrapper">
+                                            <input class="file-path validate" type="text">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-			    
 
                             <div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-10">
-                                    <button type="submit" class="btn btn-large">Enviar <i class="material-icons right">send</i>
+                                    <button type="submit" class="btn btn-large">Enviar <i
+                                            class="material-icons right">send</i>
                                     </button>
                                 </div>
                             </div>
@@ -176,21 +188,22 @@
                 }
             });
         }
-function readURL(input) {
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
 
-        reader.onload = function (e) {
-            $('#image').attr('src', e.target.result);
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#image').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
         }
 
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-
-$("#inputfile").change(function(){
-    readURL(this);
-});
+        $("#inputfile").change(function () {
+            readURL(this);
+        });
 
         $.ajax({
             url: "/interests",
@@ -234,16 +247,20 @@ $("#inputfile").change(function(){
                     dataType: 'json',
                     success: function (resultData) {
                         window.location.href = "/form_viewUser";
+                    },
+                    error: function (xhr, status, error) {
+                        try {
+                            var response = JSON.parse(xhr.responseText)
+                            alert(response.error);
+                        } catch (e) {
+                            alert('Some error ocurred. Please try again.');
+                        }
                     }
                 });
             };
             reader.readAsDataURL(file);
         }
     });
-
-    function createUser(data) {
-
-    }
 </script>
 </body>
 </html>
