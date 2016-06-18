@@ -29,3 +29,20 @@
   .card-content .panel-default {
     overflow-x: auto;
   }
+
+ #locationPicker {
+    margin-right: 15px;
+    margin-left: 15px;
+    height: 400px;
+    width: 500px;
+}
+
+.row.location {
+    margin-bottom: 50px;
+    margin-top: 50px;
+}
+
+#filePicker {
+    margin-bottom: 50px;
+    margin-top: 50px;
+}
