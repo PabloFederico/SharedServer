@@ -1,218 +1,251 @@
 <html>
 <head>
-    <title>Editar usuario</title>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link type="text/css" rel="stylesheet" href="/css/materialize.css">
-    <link type="text/css" rel="stylesheet" href="/css/main.css">
-    <script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
-    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
-    <script type="text/javascript" src="/js/materialize.js"></script>
-    <script src="/js/locationpicker.jquery.js"></script>
-    <script type="text/javascript" src='http://maps.google.com/maps/api/js?sensor=false&libraries=places'></script>
+  <title>Editar usuario</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link type="text/css" rel="stylesheet" href="/css/materialize.css">
+  <link type="text/css" rel="stylesheet" href="/css/main.css">
+  <script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
+  <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+  <script type="text/javascript" src="/js/materialize.js"></script>
+  <script src="/js/locationpicker.jquery.js"></script>
+  <script type="text/javascript" src='http://maps.google.com/maps/api/js?sensor=false&libraries=places'></script>
 </head>
 <body>
-<header>
+  <header>
     <nav class="main-navigator">
-        <div class="nav-wrapper">
-            <a href="/" class="brand-logo">MatchApp</a>
-            <a href="/" data-activates="mobile" class="button-collapse"><i class="material-icons">menu</i></a>
-            <ul class="right hide-on-med-and-down">
-                <li><a href="/form_viewUser">Usuarios</a></li>
-                <li><a href="/form_viewInterests">Intereses</a></li>
-            </ul>
-            <ul class="side-nav" id="mobile" style="transform: translateX(-100%);">
-                <li><a href="/form_viewUser">Usuarios</a></li>
-                <li><a href="/form_viewInterests">Intereses</a></li>
-            </ul>
-        </div>
+      <div class="nav-wrapper">
+        <a href="/" class="brand-logo">MatchApp</a>
+        <a href="/" data-activates="mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+        <ul class="right hide-on-med-and-down">
+          <li><a href="/form_viewUser">Usuarios</a></li>
+          <li><a href="/form_viewInterests">Intereses</a></li>
+        </ul>
+        <ul class="side-nav" id="mobile" style="transform: translateX(-100%);">
+          <li><a href="/form_viewUser">Usuarios</a></li>
+          <li><a href="/form_viewInterests">Intereses</a></li>
+        </ul>
+      </div>
     </nav>
-</header>
-<main>
+  </header>
+  <main>
     <div class="container">
-        <h2 class="header center-align">Editar usuario</h2>
-        <div class="row">
-            <div class="col s12 m12">
-                <div class="card">
-                    <div class="card-content">
-                        <form id="myform" class="form-horizontal">
-                            <div class="form-group">
-                                <label for="inputNombre" class="col-sm-2 control-label">Nombre</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="inputNombre" placeholder="Nombre"
-                                           name="name"/>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="inputAlias" class="col-sm-2 control-label">Alias</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="inputAlias" placeholder="Alias"
-                                           name="alias" required/>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="inputGender" class="col-sm-2 control-label">Gender</label>
-                                <div class="col-sm-10">
-                                    <select id="inputGender" placeholder="Gender" name="gender"
-                                            class="form-control browser-default">
-                                        <option value="F">F</option>
-                                        <option value="M">M</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="inputAge" class="col-sm-2 control-label">Age</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="inputAge" placeholder="Age" name="age"/>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="inputEmail" class="col-sm-2 control-label">Email</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="inputEmail" placeholder="Email"
-                                           name="email"/>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="inputInterest" class="col-sm-2 control-label">Interests</label>
-                                <div class="col-sm-10">
-                                    <select class="selectpicker form-control browser-default " id="inputInterest"
-                                            name="interests"
-                                            multiple></select>
-                                </div>
-                            </div>
-
-                            <div class="row location">
-                                <div class="col s8" id="locationPicker"></div>
-                                <div class="col s4">
-                                    <div class="form-group">
-                                        <label for="inputEmail" class="col-sm-2 control-label">Latitud</label>
-                                        <input type="text" class="form-control" id="inputLatitude"
-                                               placeholder="Latitud"
-                                               name="latitude"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="inputEmail" class="col-sm-2 control-label">Longitud</label>
-                                        <input type="text" class="form-control" id="inputLongitude"
-                                               placeholder="Longitud"
-                                               name="longitude"/>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div id="filePicker" class="form-group">
-                                <label for="inputfile" class="col-sm-2 control-label">Imagen</label>
-                                <div class="col-sm-10">
-                                    <input type="file" class="form-control" id="inputfile" placeholder="file"
-                                           name="file" required/>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="col-sm-offset-2 col-sm-10">
-                                    <button type="submit" class="btn btn-large">Enviar<i class="material-icons right">send</i>
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+      <h2 class="header center-align">Editar usuario</h2>
+      <div class="row">
+        <div class="col s12 m12">
+          <div class="card">
+            <div class="card-content">
+              <form id="myform" class="form-horizontal">
+                <div class="form-group">
+                  <label for="inputNombre" class="col-sm-2 control-label">Nombre</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="inputNombre" placeholder="Nombre"
+                    name="name"/>
+                  </div>
                 </div>
-            </div>
+                <div class="form-group">
+                  <label for="inputAlias" class="col-sm-2 control-label">Alias</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="inputAlias" placeholder="Alias"
+                    name="alias" required/>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="inputGender" class="col-sm-2 control-label">Gender</label>
+                  <div class="col-sm-10">
+                    <select id="inputGender" placeholder="Gender" name="gender"
+                    class="form-control browser-default">
+                    <option value="F">F</option>
+                    <option value="M">M</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputAge" class="col-sm-2 control-label">Age</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="inputAge" placeholder="Age" name="age"/>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputEmail" class="col-sm-2 control-label">Email</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="inputEmail" placeholder="Email"
+                  name="email"/>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputInterest" class="col-sm-2 control-label">Interests</label>
+                <div class="col-sm-10">
+                  <select class="selectpicker form-control browser-default " id="inputInterest"
+                  name="interests"
+                  multiple></select>
+                </div>
+              </div>
+
+              <div class="row location">
+                <div class="col s8" id="locationPicker"></div>
+                <div class="col s4">
+                  <div class="form-group">
+                    <label for="inputEmail" class="col-sm-2 control-label">Latitud</label>
+                    <input type="text" class="form-control" id="inputLatitude"
+                    placeholder="Latitud"
+                    name="latitude"/>
+                  </div>
+                  <div class="form-group">
+                    <label for="inputEmail" class="col-sm-2 control-label">Longitud</label>
+                    <input type="text" class="form-control" id="inputLongitude"
+                    placeholder="Longitud"
+                    name="longitude"/>
+                  </div>
+                </div>
+              </div>
+
+              <!-- <div id="filePicker" class="form-group">
+                <label for="inputfile" class="col-sm-2 control-label">Imagen</label>
+                <div class="col-sm-10">
+                  <input type="file" class="form-control" id="inputfile" placeholder="file"
+                  name="file" required/>
+                </div>
+              </div> -->
+
+              <div id="filePicker" class="form-group col s12">
+                <div class="col s12">
+                  <img id="image" class="centered-and-cropped" src="/ic_user.png" alt="your image"/>
+                </div>
+
+                <div class="col s12">
+                  <div class="file-field input-field">
+                    <div class="btn">
+                      <span>Pick photo</span>
+                      <input type="file" class="form-control" id="inputfile" placeholder="file"
+                      name="file" required/>
+                    </div>
+                    <div class="file-path-wrapper hide">
+                      <input class="file-path validate" type="text">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <button type="submit" class="btn btn-large">Enviar<i class="material-icons right">send</i>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </main>
 <footer class="page-footer">
+  <div class="container">
+    <div class="row">
+      <div class="col l6 s12">
+        <h5 class="white-text">Grupo 10</h5>
+      </div>
+    </div>
+  </div>
+  <div class="footer-copyright">
     <div class="container">
-        <div class="row">
-            <div class="col l6 s12">
-                <h5 class="white-text">Grupo 10</h5>
-            </div>
-        </div>
+      1er cuatrimestre 2016
+      <a class="grey-text text-lighten-4 right" href="http://www.7552.fi.uba.ar/">Taller de programación II</a>
     </div>
-    <div class="footer-copyright">
-        <div class="container">
-            1er cuatrimestre 2016
-            <a class="grey-text text-lighten-4 right" href="http://www.7552.fi.uba.ar/">Taller de programación II</a>
-        </div>
-    </div>
+  </div>
 </footer>
 <script type="text/javascript">
-    var interests = null;
-    $(document).ready(function () {
+  var interests = null;
+  $(document).ready(function () {
+    function readURL(input) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          $('#image').attr('src', e.target.result);
+        }
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
 
-        var locationPicker = $('#locationPicker')
-
-        var user_id = window.location.href;
-        user_id = parseInt((user_id).split("=")[1]);
-        $.ajax({
-            url: "/users/" + user_id,
-            type: "GET",
-            contentType: 'application/json; charset=utf-8',
-            success: function (resultData) {
-
-                var latitude = resultData.latitude || '';
-                var longitude = resultData.longitude || '';
-
-                locationPicker.locationpicker({
-                    location: {latitude: latitude, longitude: longitude},
-                    radius: 500,
-                    zoom: 15,
-                    onchanged: function (currentLocation, radius, isMarkerDropped) {
-                        $("#inputLatitude").val(currentLocation.latitude);
-                        $("#inputLongitude").val(currentLocation.longitude);
-                    },
-                    inputBinding: {
-                        latitudeInput: $('#inputLatitude'),
-                        longitudeInput: $('#inputLongitude')
-                    }
-                });
-
-                var name = resultData.name || '';
-                var email = resultData.email || '';
-                var gender = resultData.gender || '';
-                var age = resultData.age || '';
-                interests = resultData.interests || '';
-                var alias = resultData.alias || '';
-
-                $("#inputNombre").val(name);
-                $("#inputEmail").val(email);
-                $("#inputAlias").val(alias);
-                $("#inputAge").val(age);
-                $("#inputGender").val(gender);
-                $("#inputLatit").val(latitude);
-                $("#inputLongi").val(longitude);
-
-                $.ajax({
-                    url: "/interests",
-                    type: "GET",
-                    contentType: 'application/json; charset=utf-8',
-                    success: function (resultData) {
-                        for (var i = 0; i < resultData.interests.length; i++) {
-                            var interest = resultData.interests[i];
-                            var interestJson = interest.interest;
-                            var category = interestJson.category;
-                            var value = interestJson.value;
-                            var complete = category + '-' + value;
-
-                            if (interests && interests.indexOf(complete) > -1) {
-                                $("#inputInterest").append('<option selected>' + complete + '</option>');
-                            }
-                            else {
-                                $("#inputInterest").append('<option>' + complete + '</option>');
-                            }
-                        }
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                    },
-                    timeout: 120000
-                });
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-            },
-            timeout: 120000
-        });
+    $("#inputfile").change(function () {
+      readURL(this);
     });
 
-    $("#myform").submit(function (event) {
+    var locationPicker = $('#locationPicker');
+    var user_id = window.location.href;
+    user_id = parseInt((user_id).split("=")[1]);
+
+    $.ajax({
+      url: "/users/" + user_id,
+      type: "GET",
+      contentType: 'application/json; charset=utf-8',
+      success: function (resultData) {
+        var latitude = resultData.latitude || '';
+        var longitude = resultData.longitude || '';
+
+        locationPicker.locationpicker({
+          location: {latitude: latitude, longitude: longitude},
+          radius: 500,
+          zoom: 15,
+          onchanged: function (currentLocation, radius, isMarkerDropped) {
+            $("#inputLatitude").val(currentLocation.latitude);
+            $("#inputLongitude").val(currentLocation.longitude);
+          },
+          inputBinding: {
+            latitudeInput: $('#inputLatitude'),
+            longitudeInput: $('#inputLongitude')
+          }
+        });
+
+        $('#image').attr("src", "data:image/png;base64," + resultData.photo_profile);
+
+        var name = resultData.name || '';
+        var email = resultData.email || '';
+        var gender = resultData.gender || '';
+        var age = resultData.age || '';
+        interests = resultData.interests || '';
+        var alias = resultData.alias || '';
+
+        $("#inputNombre").val(name);
+        $("#inputEmail").val(email);
+        $("#inputAlias").val(alias);
+        $("#inputAge").val(age);
+        $("#inputGender").val(gender);
+        $("#inputLatit").val(latitude);
+        $("#inputLongi").val(longitude);
+
+        $.ajax({
+          url: "/interests",
+          type: "GET",
+          contentType: 'application/json; charset=utf-8',
+          success: function (resultData) {
+            for (var i = 0; i < resultData.interests.length; i++) {
+              var interest = resultData.interests[i];
+              var interestJson = interest.interest;
+              var category = interestJson.category;
+              var value = interestJson.value;
+              var complete = category + '-' + value;
+
+              if (interests && interests.indexOf(complete) > -1) {
+                $("#inputInterest").append('<option selected>' + complete + '</option>');
+              }
+              else {
+                $("#inputInterest").append('<option>' + complete + '</option>');
+              }
+            }
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+          },
+          timeout: 120000
+        });
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+      },
+      timeout: 120000
+    });
+});
+
+$("#myform").submit(function (event) {
         // Cancels the form's submit action.
         event.preventDefault();
 
@@ -226,26 +259,31 @@
         var validForm = $(this).valid();
 
         if (validForm) {
-            var reader = new FileReader();
-            reader.onload = function (readerEvt) {
-                var binaryString = readerEvt.target.result.substr(reader.result.indexOf(',') + 1);
-                data += "&photo_profile=" + binaryString;
-                $.ajax({
-                    url: "/users/" + user_id,
-                    type: "PUT",
-                    data: data,
-                    dataType: 'json',
-                    success: function (resultData) {
-                        window.location.href = "/form_viewUser";
-                    },
-                    error: function () {
-                        alert("Some error happen. Please try again.")
-                    }
-                });
-            };
-            reader.readAsDataURL(file);
+          var reader = new FileReader();
+          reader.onload = function (readerEvt) {
+            var binaryString = readerEvt.target.result.substr(reader.result.indexOf(',') + 1);
+            data += "&photo_profile=" + binaryString;
+            $.ajax({
+              url: "/users/" + user_id,
+              type: "PUT",
+              data: data,
+              dataType: 'json',
+              success: function (resultData) {
+                window.location.href = "/form_viewUser";
+              },
+              error: function (xhr, status, error) {
+                try {
+                  var response = JSON.parse(xhr.responseText)
+                  alert(response.error);
+                } catch (e) {
+                  alert('Some error ocurred. Please try again.');
+                }
+              }
+            });
+          };
+          reader.readAsDataURL(file);
         }
-    });
+      });
 </script>
 </body>
 </html>
