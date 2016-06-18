@@ -13,7 +13,7 @@ function UserService() {
       name: data.name,
       alias: data.alias,
       email: data.email,
-      sex: data.sex,
+      gender: data.gender,
       age: data.age,
       photo_profile: encodeURI(data.photo_profile),
       interests: data.interests,
@@ -24,32 +24,35 @@ function UserService() {
     };
   };
 
-  this.populateUserInterests = function (data) {
+  this.populateUserInterests = function (user) {
     var deferred = Q.defer();
 
     pg.connect(config.DATABASE_URL, function (err, client, done) {
-      data.interests = "";
-      client.query("SELECT * FROM userInterests ui, interests i" +
-      " WHERE userId = ($1)", [data.id], function (err, result) {
+      user.interests = "";
+
+      client.query("SELECT * FROM userInterests ui, interests i, users u " +
+      " WHERE u.id = ($1)" +
+      " AND ui.userId=u.id" +
+      " AND i.id=ui.interestId", [user.id], function (err, result) {
         done();
         if (result.rowCount > 0) {
-          _.each(result.rows, function (user) {
-            data.interests += user.category + '-' + user.value + ' , ';
+          _.each(result.rows, function (row) {
+            user.interests += row.category + '-' + row.value + ' , ';
           });
-          data.interests = data.interests.substr(0, data.interests.length - 2);
+          user.interests = user.interests.substr(0, user.interests.length - 2);
         }
-        deferred.resolve(data);
+        deferred.resolve(user);
       });
     });
 
     return deferred.promise;
   };
 
-  this.insertUserInterest = function (interest) {
+  this.insertUserInterest = function (userId, interest) {
     var deferred = Q.defer();
     pg.connect(config.DATABASE_URL, function (err, client, done) {
       client.query("SELECT * FROM interests WHERE value = ($1)", [interest.split('-')[1]], function (err, result) {
-        client.query("INSERT INTO userInterests(userId, interestId) values($1, $2)", [response.id, result.rows[0].id], function (err, result) {
+        client.query("INSERT INTO userInterests(userId, interestId) values($1, $2)", [userId, result.rows[0].id], function (err, result) {
           done();
           deferred.resolve();
         });
@@ -105,11 +108,11 @@ UserService.prototype.create = function (data, next) {
         next({message: "Username already taken"}, null);
       }
 
-      var user = [data.name || null, data.username || null, encryptedPassword, data.email || null, data.sex || null, data.age
+      var user = [data.name || null, data.username || null, encryptedPassword, data.email || null, data.gender || null, data.age
       || null, data.latitude || null, data.longitude || null, photo_profile_base64];
 
       //Create user
-      client.query("INSERT INTO users(name, alias, password, email, sex, age, latitude, longitude, photo_profile)" +
+      client.query("INSERT INTO users(name, alias, password, email, gender, age, latitude, longitude, photo_profile)" +
       " values($1, $2, $3, $4, $5, $6, $7, $8, $9)", user, function (err, result) {
         done();
         if (err) {
@@ -125,7 +128,7 @@ UserService.prototype.create = function (data, next) {
             var promises = [];
             //Create user associated interests
             _.each(data.interests, function (interest) {
-              var promise = this.insertUserInterest(interest);
+              var promise = that.insertUserInterest(response.id, interest);
               promises.push(promise);
             });
             Q.all(promises).then(function () {

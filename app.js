@@ -47,7 +47,7 @@ pg.connect(config.DATABASE_URL, function (err, client, done) {
   ' alias VARCHAR(20),' +
   ' password VARCHAR(300),' +
   ' email VARCHAR(30),' +
-  ' sex VARCHAR(4),' +
+  ' gender VARCHAR(1),' +
   ' age VARCHAR(10),' +
   ' latitude VARCHAR(30),' +
   ' longitude VARCHAR(30),' +
