@@ -10,7 +10,7 @@ exports.login = function (request, response) {
 };
 
 exports.create = function (request, response) {
-  userService.create(request.body, function(err, result) {
+  userService.create(request.body, function (err, result) {
     if (err) {
       return response.status(500).json({error: err.message});
     }
@@ -19,7 +19,7 @@ exports.create = function (request, response) {
 };
 
 exports.update = function (request, response) {
-  userService.update(request.params.id, request.body, function(err, result) {
+  userService.update(request.params.id, request.body, function (err, result) {
     if (err) {
       return response.status(500).json({error: "An error ocurred processing the request"});
     }
@@ -28,7 +28,7 @@ exports.update = function (request, response) {
 };
 
 exports.delete = function (request, response) {
-  userService.delete(request.params.id, function(err, result) {
+  userService.delete(request.params.id, function (err, result) {
     if (err) {
       return response.status(500).json({error: "An error ocurred processing the request"});
     }
@@ -37,7 +37,7 @@ exports.delete = function (request, response) {
 };
 
 exports.get = function (request, response) {
-  userService.get(request.params.id, function(err, result) {
+  userService.get(request.params.id, function (err, result) {
     if (err) {
       console.log(err);
       return response.status(500).json({error: "An error ocurred processing the request"});
@@ -47,7 +47,7 @@ exports.get = function (request, response) {
 };
 
 exports.getAll = function (request, response) {
-  userService.getAll(function(err, result) {
+  userService.getAll(function (err, result) {
     if (err) {
       return response.status(500).json({error: ""});
     }
@@ -55,8 +55,8 @@ exports.getAll = function (request, response) {
   });
 };
 
-exports.getCandidate = function (request, response) {
-  userService.getCandidate(request.params.user, function(err, result) {
+exports.getCandidates = function (request, response) {
+  userService.getCandidates(request.params.user, function (err, result) {
     if (err) {
       return response.status(500).json({error: "An error ocurred processing the request"});
     }

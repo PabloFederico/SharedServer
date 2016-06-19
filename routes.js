@@ -14,7 +14,7 @@ exports = module.exports = function(app) {
 	app.get('/interests', require('./api/interest').getAll);
 	app.post('/interests', require('./api/interest').create);
 	app.delete('/interests/:id', require('./api/interest').delete);
-	app.get('/users/:user/candidate', require('./api/user').getCandidate);
+	app.get('/users/:user/candidates', require('./api/user').getCandidates);
 	//app.post('/profiles', require('./api/profile').getProfiles);
 	app.get('/form_newUser', require('./api/user').form_newUser);
 	app.get('/form_viewUser', require('./api/user').form_viewUser);

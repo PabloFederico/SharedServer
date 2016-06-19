@@ -192,14 +192,16 @@ UserService.prototype.getAll = function (next) {
   });
 };
 
-UserService.prototype.getCandidate = function (alias, next) {
+UserService.prototype.getCandidates = function (alias, next) {
   var that = this;
   pg.connect(config.DATABASE_URL, function (err, client, done) {
-    var query = client.query("SELECT DISTINCT * FROM userinterests iu, users u" +
+
+    var query = client.query("SELECT DISTINCT userId,name,alias,email,gender,age,photo_profile FROM userinterests iu, users u" +
     " WHERE u.alias <> ($1)" +
-    " and iu.userid = u.id" +
-    " and iu.interestid " +
-    " IN (SELECT iu2.interestid FROM userinterests iu2 WHERE iu2.userid = u.id)", [alias], function (err, result) {
+    " AND iu.userid = u.id" +
+    " AND iu.interestid" +
+    " IN (SELECT iu2.interestid FROM userinterests iu2,users u2  WHERE u2.alias = ($1) AND iu2.userid = u2.id)"
+    , [alias], function (err, result) {
 
       // Stream results back one row at a time
       query.on('row', function (row, result) {
