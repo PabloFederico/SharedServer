@@ -249,12 +249,17 @@
         var file = $('#inputfile')[0].files[0];
 
         $(this).validate();
-        var validForm = $(this).valid();
+        var validForm = $(this).validate();
 
         if (validForm) {
             var reader = new FileReader();
             reader.onload = function (readerEvt) {
                 data.photo_profile = readerEvt.target.result.substr(reader.result.indexOf(',') + 1);
+                var interests = $("#inputInterest").val();
+                if (interests) {
+                    data.interests = $("#inputInterest").val();
+                }
+
                 $.ajax({
                     url: "/users/" + user_id,
                     type: "PUT",

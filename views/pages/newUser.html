@@ -240,6 +240,12 @@
             var reader = new FileReader();
             reader.onload = function (readerEvt) {
                 data.photo_profile = readerEvt.target.result.substr(reader.result.indexOf(',') + 1);
+
+                var interests = $("#inputInterest").val();
+                if (interests) {
+                    data.interests = $("#inputInterest").val();
+                }
+
                 $.ajax({
                     url: "/users",
                     type: "POST",
