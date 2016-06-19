@@ -86,10 +86,9 @@
             success: function (resultData) {
                 for (var i = 0; i < resultData.interests.length; i++) {
                     var interest = resultData.interests[i];
-                    var interestJson = interest.interest;
-                    var id = interestJson.id;
-                    var category = interestJson.category;
-                    var value = interestJson.value;
+                    var id = interest.id;
+                    var category = interest.category;
+                    var value = interest.value;
                     $("#tabla").append('<tr><td>' + id + '</td><td>' + category + '</td><td>' + value + '</td><td><button type="button" id="eliminar" class="btn btn-warning" onclick="toDelete(\'' + id + '\')"><i class="material-icons">delete</i></button></td></tr>');
                 }
             },

@@ -220,8 +220,8 @@
 
                             var found = false;
 
-                            for (var i = 0; i < userInterests.length; i++) {
-                                var userInterestId = userInterests[i].id;
+                            for (var index = 0; index < userInterests.length; index++) {
+                                var userInterestId = userInterests[index].id;
                                 if (userInterestId == interest.id) {
                                     found = true;
                                     break;
@@ -229,10 +229,10 @@
                             }
 
                             if (found) {
-                                $("#inputInterest").append('<option selected>' + interestLabel + '</option>');
+                                $("#inputInterest").append('<option id="' + interest.id + '" selected>' + interestLabel + '</option>');
                             }
                             else {
-                                $("#inputInterest").append('<option>' + interestLabel + '</option>');
+                                $("#inputInterest").append('<option id="' + interest.id + '">' + interestLabel + '</option>');
                             }
                         }
                     },
@@ -265,14 +265,17 @@
 
             data.photo_profile = src.substr(src.indexOf(prefix) + prefix.length);
 
-            var interests = $("#inputInterest").val();
+            var selectedInterests = $("#inputInterest option:selected");
 
             data.interests = [];
-            if (interests) {
-                for (var interest in interests) {
-                    var category = interest.split("-")[0];
-                    var value = interest.split("-")[1];
-                    data.interests.push({category: category, value: value})
+
+            if (selectedInterests) {
+                for (var index = 0; index < selectedInterests.length; index++) {
+                    //var interest = $(selectedInterests[index]).val();
+                    var id = parseInt(selectedInterests[index].id);
+                    //var category = interest.split("-")[0];
+                    //var value = interest.split("-")[1];
+                    data.interests.push(id);
                 }
             }
 

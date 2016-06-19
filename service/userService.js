@@ -37,9 +37,9 @@ function UserService() {
       user.interests = [];
 
       client.query("SELECT i.id, i.category, i.value FROM userInterests ui, interests i, users u " +
-        " WHERE u.id = ($1)" +
-        " AND ui.userId=u.id" +
-        " AND i.id=ui.interestId", [user.id], function (err, result) {
+      " WHERE u.id = ($1)" +
+      " AND ui.userId=u.id" +
+      " AND i.id=ui.interestId", [user.id], function (err, result) {
         done();
         if (result.rowCount > 0) {
           _.each(result.rows, function (row) {
@@ -53,10 +53,10 @@ function UserService() {
     return deferred.promise;
   };
 
-  this.insertUserInterest = function (userId, interest) {
+  this.insertUserInterest = function (userId, interestId) {
     var deferred = Q.defer();
     pg.connect(config.DATABASE_URL, function (err, client, done) {
-      client.query("INSERT INTO userInterests(userId, interestId) values($1, $2)", [userId, interest.id], function (err, result) {
+      client.query("INSERT INTO userInterests(userId, interestId) values($1, $2)", [userId, interestId], function (err, result) {
         done();
         deferred.resolve();
       });
@@ -64,12 +64,12 @@ function UserService() {
     return deferred.promise;
   };
 
-  this.deleteUserInterests = function (userId, interest) {
+  this.deleteUserInterests = function (userId, interestId) {
     var deferred = Q.defer();
     pg.connect(config.DATABASE_URL, function (err, client, done) {
       client.query("DELETE FROM userInterests " +
-        " WHERE userId= ($!)" +
-        " AND interestId = ($2)", [userId, interest.id], function (err, result) {
+      " WHERE userId = ($1)" +
+      " AND interestId = ($2)", [userId, interestId], function (err, result) {
         done();
         deferred.resolve();
       });
@@ -135,7 +135,7 @@ UserService.prototype.create = function (data, next) {
 
       //Create user
       client.query("INSERT INTO users(name, alias, password, email, gender, age, latitude, longitude, photo_profile)" +
-        " values($1, $2, $3, $4, $5, $6, $7, $8, $9)", user, function (err, result) {
+      " values($1, $2, $3, $4, $5, $6, $7, $8, $9)", user, function (err, result) {
         done();
         if (err) {
           console.log(err);
@@ -147,7 +147,7 @@ UserService.prototype.create = function (data, next) {
             var promises = [];
             //Create user associated interests
             _.each(data.interests, function (interest) {
-              var promise = that.insertUserInterest(response.id, interest);
+              var promise = that.insertUserInterest(response.id, interest.id);
               promises.push(promise);
             });
             Q.all(promises).then(function () {
@@ -196,10 +196,10 @@ UserService.prototype.getCandidate = function (alias, next) {
   var that = this;
   pg.connect(config.DATABASE_URL, function (err, client, done) {
     var query = client.query("SELECT DISTINCT * FROM userinterests iu, users u" +
-      " WHERE u.alias <> ($1)" +
-      " and iu.userid = u.id" +
-      " and iu.interestid " +
-      " IN (SELECT iu2.interestid FROM userinterests iu2 WHERE iu2.userid = u.id)", [alias], function (err, result) {
+    " WHERE u.alias <> ($1)" +
+    " and iu.userid = u.id" +
+    " and iu.interestid " +
+    " IN (SELECT iu2.interestid FROM userinterests iu2 WHERE iu2.userid = u.id)", [alias], function (err, result) {
 
       // Stream results back one row at a time
       query.on('row', function (row, result) {
@@ -234,7 +234,7 @@ UserService.prototype.getCandidate = function (alias, next) {
 UserService.prototype.update = function (userId, data, next) {
   var updateQuery = [];
 
-  var interestsArray = data.interests;
+  var selectedInterests = data.interests;
   delete(data.interests);
 
   var keys = Object.keys(data);
@@ -256,12 +256,16 @@ UserService.prototype.update = function (userId, data, next) {
         next(err);
         console.log(err);
       } else {
-        next(null, {});
+        client.query("SELECT i.id FROM userInterests ui, interests i" +
+        " WHERE  userId= ($1)" +
+        " AND i.id=ui.interestId", [userId], function (err, result) {
 
-        client.query("SELECT * FROM userInterests" +
-          " WHERE  userId= ($1)", [userId], function (err, result) {
-          var interestsToInsert = _.difference(interestsArray, result.rows);
-          var interestsToDelete = _.difference(result.rows, interestsArray);
+          result.rows = _.map(result.rows, function (row) {
+            return row.id;
+          });
+
+          var interestsToInsert = _.difference(selectedInterests, result.rows);//2;1,2->[]
+          var interestsToDelete = _.difference(result.rows, selectedInterests);//1,2;1->2
 
           var promises = [];
 
