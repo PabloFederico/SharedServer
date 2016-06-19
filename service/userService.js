@@ -34,7 +34,7 @@ function UserService() {
     var deferred = Q.defer();
 
     pg.connect(config.DATABASE_URL, function (err, client, done) {
-      user.interests = "";
+      user.interests = [];
 
       client.query("SELECT i.category, i.value, u.id FROM userInterests ui, interests i, users u " +
         " WHERE u.id = ($1)" +
@@ -43,9 +43,8 @@ function UserService() {
         done();
         if (result.rowCount > 0) {
           _.each(result.rows, function (row) {
-            user.interests += row.category + '-' + row.value + ' , ';
+            user.interests.push({category: row.category, value: row.value})
           });
-          user.interests = user.interests.substr(0, user.interests.length - 2);
         }
         deferred.resolve(user);
       });
@@ -59,7 +58,7 @@ function UserService() {
     pg.connect(config.DATABASE_URL, function (err, client, done) {
       client.query("SELECT id FROM interests " +
         " WHERE category = ($1) " +
-        " AND value = ($2) ", [interest.split('-')[0], interest.split('-')[1]], function (err, result) {
+        " AND value = ($2) ", [interest.category, interest.value], function (err, result) {
         if (err) {
           done();
           deferred.reject();
@@ -79,7 +78,7 @@ function UserService() {
     pg.connect(config.DATABASE_URL, function (err, client, done) {
       client.query("SELECT id FROM interests " +
         " WHERE category = ($1) " +
-        " AND value = ($2) ", [interest.split('-')[0], interest.split('-')[1]], function (err, result) {
+        " AND value = ($2) ", [interest.category, interest.value], function (err, result) {
         if (err) {
           done();
           deferred.reject();
@@ -139,8 +138,6 @@ UserService.prototype.get = function (userId, next) {
 UserService.prototype.create = function (data, next) {
   var that = this;
 
-  console.log(data);
-
   pg.connect(config.DATABASE_URL, function (err, client, done) {
     var encryptedPassword = utils.encryptPassword(data.password);
     var photo_profile_base64 = data.photo_profile ? data.photo_profile.replace(/ /g, '+') : null;
@@ -165,9 +162,6 @@ UserService.prototype.create = function (data, next) {
           next(null, {});
         } else {
           that.byAlias(data.username).then(function (response) {
-            if (!_.isArray(data.interests)) {
-              data.interests = [data.interests];
-            }
             var promises = [];
             //Create user associated interests
             _.each(data.interests, function (interest) {

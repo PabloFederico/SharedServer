@@ -122,7 +122,7 @@
                                             <input type="file" class="form-control" id="inputfile" placeholder="file"
                                                    name="file" required/>
                                         </div>
-                                        <div class="file-path-wrapper">
+                                        <div class="file-path-wrapper hide">
                                             <input class="file-path validate" type="text">
                                         </div>
                                     </div>
@@ -210,10 +210,8 @@
             success: function (resultData) {
                 for (var i = 0; i < resultData.interests.length; i++) {
                     var interest = resultData.interests[i];
-                    var interestJson = interest.interest;
-                    var id = interestJson.id;
-                    var category = interestJson.category;
-                    var value = interestJson.value;
+                    var category = interest.category;
+                    var value = interest.value;
                     $("#inputInterest").append('<option>' + category + '-' + value + '</option>');
                 }
             },
@@ -242,14 +240,21 @@
                 data.photo_profile = readerEvt.target.result.substr(reader.result.indexOf(',') + 1);
 
                 var interests = $("#inputInterest").val();
+
+                data.interests = [];
                 if (interests) {
-                    data.interests = $("#inputInterest").val();
+                    for (var index = 0; index < interests.length; index++) {
+                        var interest = interests[index];
+                        var category = interest.split("-")[0];
+                        var value = interest.split("-")[1];
+                        data.interests.push({category: category, value: value})
+                    }
                 }
 
                 $.ajax({
                     url: "/users",
                     type: "POST",
-                    data: data,
+                    data: JSON.stringify(data),
                     dataType: 'json',
                     contentType: 'application/json; charset=UTF-8',
                     success: function (resultData) {

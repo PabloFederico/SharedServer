@@ -41,24 +41,24 @@
             <h2 class="header center-align">Listado de usuarios</h2>
             <div class="col s12 m12">
                 <div class="panel panel-default">
-                  <!-- Table -->
-                  <table class="table table-striped " id="tabla">
-                    <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Nombre</th>
-                        <th>Alias</th>
-                        <th>Sexo</th>
-                        <th>Edad</th>
-                        <th>Email</th>
-                        <th class="fixed-width">Latitud</th>
-                        <th class="fixed-width">Longitud</th>
-                        <th>Intereses</th>
-                        <th> </th>
-                        <th> </th>
-                    </tr>
-                    </thead>
-                </table>
+                    <!-- Table -->
+                    <table class="table table-striped " id="tabla">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Nombre</th>
+                            <th>Alias</th>
+                            <th>Sexo</th>
+                            <th>Edad</th>
+                            <th>Email</th>
+                            <th class="fixed-width">Latitud</th>
+                            <th class="fixed-width">Longitud</th>
+                            <th>Intereses</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
         </div>
@@ -83,13 +83,6 @@
 <script type="text/javascript" src="/js/materialize.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        $("#editar").on("click", function () {
-            alert("editar");
-        })
-        /*$("#eliminar").on("click", function () {
-         alert("eliminar");
-         })*/
-        var midata = null;
         $.ajax({
             url: "/users",
             type: "GET",
@@ -106,7 +99,15 @@
                     var interests = user.interests;
                     var latitude = user.location.latitude;
                     var longitude = user.location.longitude;
-                    $("#tabla").append('<tr><td>' + id + '</td><td>' + name + '</td><td>' + alias + '</td><td>' + gender + '</td><td>' + age + '</td><td>' + email + '</td><td>' + latitude + '</td><td>' + longitude + '</td><td>' + interests + '</td><td><button type="button" id="editar" class="btn btn-success" onclick="toEdit(\'' + id + '\')"><i class="material-icons">mode_edit</i></button></td><td><button type="button" id="eliminar" class="btn btn-warning" onclick="toDelete(\'' + id + '\')"><i class="material-icons">delete</i></button></td></tr>');
+
+                    var interestsLabel = "";
+                    for (index = 0; index < interests.length; index++) {
+                        var interest = interests[index];
+                        var separator = index != interests.length - 1 ? "," : "";
+                        interestsLabel += interest.category + " - " + interest.value + separator;
+                    }
+
+                    $("#tabla").append('<tr><td>' + id + '</td><td>' + name + '</td><td>' + alias + '</td><td>' + gender + '</td><td>' + age + '</td><td>' + email + '</td><td>' + latitude + '</td><td>' + longitude + '</td><td>' + interestsLabel + '</td><td><button type="button" id="editar" class="btn btn-success" onclick="toEdit(\'' + id + '\')"><i class="material-icons">mode_edit</i></button></td><td><button type="button" id="eliminar" class="btn btn-warning" onclick="toDelete(\'' + id + '\')"><i class="material-icons">delete</i></button></td></tr>');
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
