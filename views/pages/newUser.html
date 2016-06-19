@@ -212,7 +212,8 @@
                     var interest = resultData.interests[i];
                     var category = interest.category;
                     var value = interest.value;
-                    $("#inputInterest").append('<option>' + category + '-' + value + '</option>');
+                    var interestLabel = category + '-' + value;
+                    $("#inputInterest").append('<option id="' + interest.id + '">' + interestLabel + '</option>');
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -239,15 +240,13 @@
             reader.onload = function (readerEvt) {
                 data.photo_profile = readerEvt.target.result.substr(reader.result.indexOf(',') + 1);
 
-                var interests = $("#inputInterest").val();
-
+                var selectedInterests = $("#inputInterest option:selected");
                 data.interests = [];
-                if (interests) {
-                    for (var index = 0; index < interests.length; index++) {
-                        var interest = interests[index];
-                        var category = interest.split("-")[0];
-                        var value = interest.split("-")[1];
-                        data.interests.push({category: category, value: value})
+
+                if (selectedInterests) {
+                    for (var index = 0; index < selectedInterests.length; index++) {
+                        var id = parseInt(selectedInterests[index].id);
+                        data.interests.push(id);
                     }
                 }
 

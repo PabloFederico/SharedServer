@@ -146,8 +146,8 @@ UserService.prototype.create = function (data, next) {
           that.byAlias(data.username).then(function (response) {
             var promises = [];
             //Create user associated interests
-            _.each(data.interests, function (interest) {
-              var promise = that.insertUserInterest(response.id, interest.id);
+            _.each(data.interests, function (interestId) {
+              var promise = that.insertUserInterest(response.id, interestId);
               promises.push(promise);
             });
             Q.all(promises).then(function () {
