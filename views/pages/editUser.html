@@ -148,7 +148,7 @@
     </div>
 </footer>
 <script type="text/javascript">
-    var interests = null;
+
     $(document).ready(function () {
         function readURL(input) {
             if (input.files && input.files[0]) {
@@ -196,7 +196,7 @@
                 var email = resultData.email || '';
                 var gender = resultData.gender || '';
                 var age = resultData.age || '';
-                interests = resultData.interests || '';
+                var userInterests = resultData.interests || '';
                 var alias = resultData.alias || '';
 
                 $("#inputNombre").val(name);
@@ -214,16 +214,25 @@
                     success: function (resultData) {
                         for (var i = 0; i < resultData.interests.length; i++) {
                             var interest = resultData.interests[i];
-                            var interestJson = interest.interest;
-                            var category = interestJson.category;
-                            var value = interestJson.value;
-                            var complete = category + '-' + value;
+                            var category = interest.category;
+                            var value = interest.value;
+                            var interestLabel = category + '-' + value;
 
-                            if (interests && interests.indexOf(complete) > -1) {
-                                $("#inputInterest").append('<option selected>' + complete + '</option>');
+                            var found = false;
+
+                            for (var i = 0; i < userInterests.length; i++) {
+                                var userInterestId = userInterests[i].id;
+                                if (userInterestId == interest.id) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+
+                            if (found) {
+                                $("#inputInterest").append('<option selected>' + interestLabel + '</option>');
                             }
                             else {
-                                $("#inputInterest").append('<option>' + complete + '</option>');
+                                $("#inputInterest").append('<option>' + interestLabel + '</option>');
                             }
                         }
                     },

@@ -36,14 +36,14 @@ function UserService() {
     pg.connect(config.DATABASE_URL, function (err, client, done) {
       user.interests = [];
 
-      client.query("SELECT i.category, i.value, u.id FROM userInterests ui, interests i, users u " +
+      client.query("SELECT i.id, i.category, i.value FROM userInterests ui, interests i, users u " +
         " WHERE u.id = ($1)" +
         " AND ui.userId=u.id" +
         " AND i.id=ui.interestId", [user.id], function (err, result) {
         done();
         if (result.rowCount > 0) {
           _.each(result.rows, function (row) {
-            user.interests.push({category: row.category, value: row.value})
+            user.interests.push({id: row.id, category: row.category, value: row.value})
           });
         }
         deferred.resolve(user);
@@ -56,18 +56,9 @@ function UserService() {
   this.insertUserInterest = function (userId, interest) {
     var deferred = Q.defer();
     pg.connect(config.DATABASE_URL, function (err, client, done) {
-      client.query("SELECT id FROM interests " +
-        " WHERE category = ($1) " +
-        " AND value = ($2) ", [interest.category, interest.value], function (err, result) {
-        if (err) {
-          done();
-          deferred.reject();
-        } else {
-          client.query("INSERT INTO userInterests(userId, interestId) values($1, $2)", [userId, result.rows[0].id], function (err, result) {
-            done();
-            deferred.resolve();
-          });
-        }
+      client.query("INSERT INTO userInterests(userId, interestId) values($1, $2)", [userId, interest.id], function (err, result) {
+        done();
+        deferred.resolve();
       });
     });
     return deferred.promise;
@@ -76,20 +67,11 @@ function UserService() {
   this.deleteUserInterests = function (userId, interest) {
     var deferred = Q.defer();
     pg.connect(config.DATABASE_URL, function (err, client, done) {
-      client.query("SELECT id FROM interests " +
-        " WHERE category = ($1) " +
-        " AND value = ($2) ", [interest.category, interest.value], function (err, result) {
-        if (err) {
-          done();
-          deferred.reject();
-        } else {
-          client.query("DELETE FROM userInterests " +
-            " WHERE userId= ($!)" +
-            " AND interestId = ($2)", [userId, result.rows[0].id], function (err, result) {
-            done();
-            deferred.resolve();
-          });
-        }
+      client.query("DELETE FROM userInterests " +
+        " WHERE userId= ($!)" +
+        " AND interestId = ($2)", [userId, interest.id], function (err, result) {
+        done();
+        deferred.resolve();
       });
     });
     return deferred.promise;
@@ -276,27 +258,27 @@ UserService.prototype.update = function (userId, data, next) {
       } else {
         next(null, {});
 
-        // client.query("SELECT * FROM userInterests" +
-        // 	" WHERE  userId= ($1)", [userId], function (err, result) {
-        // 		var interestsToInsert = _.difference(interestsArray, result.rows);
-        // 		var interestsToDelete = _.difference(result.rows, interestsArray);
+        client.query("SELECT * FROM userInterests" +
+          " WHERE  userId= ($1)", [userId], function (err, result) {
+          var interestsToInsert = _.difference(interestsArray, result.rows);
+          var interestsToDelete = _.difference(result.rows, interestsArray);
 
-        // 		var promises = [];
+          var promises = [];
 
-        // 		_.each(interestsToInsert, function (interest) {
-        // 			promises.push(that.insertUserInterest(userId, interest));
-        // 		});
+          _.each(interestsToInsert, function (interest) {
+            promises.push(that.insertUserInterest(userId, interest));
+          });
 
-        // 		_.each(interestsToDelete, function (interest) {
-        // 			promises.push(that.deleteUserInterests(userId, interest));
-        // 		});
+          _.each(interestsToDelete, function (interest) {
+            promises.push(that.deleteUserInterests(userId, interest));
+          });
 
-        // 		Q.all(promises).then(function () {
-        // 			next(null, {});
-        // 		}).fail(function(err) {
-        // 			next(err, null);
-        // 		});
-        // 	});
+          Q.all(promises).then(function () {
+            next(null, {});
+          }).fail(function (err) {
+            next(err, null);
+          });
+        });
       }
     });
   });
