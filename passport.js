@@ -3,6 +3,7 @@ var pg = require('pg');
 var _ = require('underscore');
 var config = require('./config');
 var utils = require('./utils');
+var userService = require('./service/userService')();
 
 exports = module.exports = function (app, passport) {
   var LocalStrategy = require('passport-local').Strategy;
@@ -34,7 +35,9 @@ exports = module.exports = function (app, passport) {
           //Return photo profile as base64 string instead bytea default
           user.photo_profile = encodeURI(user.photo_profile.toString());
 
-          return done(null, user);
+          userService.populateUserInterests(user).then(function (data) {
+            return done(null, user);
+          });
         });
       });
     }

@@ -78,22 +78,6 @@ function UserService() {
   }
 }
 
-UserService.prototype.byAlias = function (alias) {
-  var deferred = Q.defer();
-  pg.connect(config.DATABASE_URL, function (err, client, done) {
-    client.query("SELECT * FROM users WHERE alias = ($1)", [alias], function (err, result) {
-      done();
-      if (err) {
-        console.log(err);
-        deferred.reject();
-      } else {
-        deferred.resolve(result.rows[0]);
-      }
-    });
-  });
-  return deferred.promise;
-};
-
 UserService.prototype.get = function (userId, next) {
   var that = this;
   pg.connect(config.DATABASE_URL, function (err, client, done) {
@@ -139,11 +123,11 @@ UserService.prototype.create = function (data, next) {
         done();
         if (err) {
           console.log(err);
-          next({message: ""}, null);
+          next(err);
         } else if (!data.interests) {
           next(null, {});
         } else {
-          that.byAlias(data.username).then(function (response) {
+          that.getProfile(data.username, function (err, response) {
             var promises = [];
             //Create user associated interests
             _.each(data.interests, function (interestId) {
@@ -188,6 +172,20 @@ UserService.prototype.getAll = function (next) {
         next(err, null);
       });
       ;
+    });
+  });
+};
+
+UserService.prototype.getProfile = function (alias, next) {
+  pg.connect(config.DATABASE_URL, function (err, client, done) {
+    client.query("SELECT * FROM users WHERE alias = ($1)", [alias], function (err, result) {
+      done();
+      if (err) {
+        console.log(err);
+        next(err);
+      } else {
+        next(null, result.rows[0]);
+      }
     });
   });
 };

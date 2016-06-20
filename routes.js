@@ -14,13 +14,12 @@ exports = module.exports = function(app) {
 	app.get('/interests', require('./api/interest').getAll);
 	app.post('/interests', require('./api/interest').create);
 	app.delete('/interests/:id', require('./api/interest').delete);
+	app.get('/users/:user/profile', require('./api/user').getProfile);
 	app.get('/users/:user/candidates', require('./api/user').getCandidates);
-	//app.post('/profiles', require('./api/profile').getProfiles);
 	app.get('/form_newUser', require('./api/user').form_newUser);
 	app.get('/form_viewUser', require('./api/user').form_viewUser);
 	app.get('/form_editUser', require('./api/user').form_editUser);
 	app.get('/form_newInterest', require('./api/user').form_newInterest);
 	app.get('/form_viewInterests', require('./api/user').form_viewInterests);
 	app.get('/form_viewUserInterest', require('./api/user').form_viewUserInterest);
-	//app.get('/userInterest', require('./api/user').getAllUserInterest);
 };
