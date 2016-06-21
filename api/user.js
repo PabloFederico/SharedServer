@@ -39,8 +39,8 @@ exports.delete = function (request, response) {
 exports.get = function (request, response) {
   userService.get(request.params.id, function (err, result) {
     if (err) {
-      console.log(err);
-      return response.status(500).json({error: "An error ocurred processing the request"});
+      var message = err.message ? err.message : "An error ocurred processing the request";
+      return response.status(500).json({error: message});
     }
     return response.status(200).json(result);
   });
@@ -76,7 +76,8 @@ exports.getProfile = function (request, response) {
 exports.getCandidates = function (request, response) {
   userService.getCandidates(request.params.user, function (err, result) {
     if (err) {
-      return response.status(500).json({error: "An error ocurred processing the request"});
+      var message = err.message ? err.message : "An error ocurred processing the request";
+      return response.status(400).json({error: message});
     }
     return response.status(200).json(result);
   });

@@ -97,6 +97,8 @@ UserService.prototype.get = function (userId, next) {
         }).fail(function (err) {
           next(err, null);
         });
+      } else {
+      	next({message: "User not found in the database"});
       }
     });
   });
@@ -209,11 +211,11 @@ UserService.prototype.getCandidates = function (alias, next) {
   var that = this;
   pg.connect(config.DATABASE_URL, function (err, client, done) {
 
-    var query = client.query("SELECT DISTINCT userId,name,alias,email,gender,age,photo_profile FROM userinterests iu, users u" +
+    var query = client.query("SELECT DISTINCT u.id, name, alias, email, gender, age, photo_profile FROM userinterests iu, users u" +
     " WHERE u.alias <> ($1)" +
     " AND iu.userid = u.id" +
     " AND iu.interestid" +
-    " IN (SELECT iu2.interestid FROM userinterests iu2,users u2  WHERE u2.alias = ($1) AND iu2.userid = u2.id)"
+    " IN (SELECT iu2.interestid FROM userinterests iu2, users u2  WHERE u2.alias = ($1) AND iu2.userid = u2.id)"
     , [alias], function (err, result) {
 
       // Stream results back one row at a time
@@ -223,24 +225,34 @@ UserService.prototype.getCandidates = function (alias, next) {
 
       // After all data is returned, close connection and return results
       query.on('end', function (result) {
-        done();
-        var jsonObject = {"users": [], metadata: {version: 0.1}};
-        var promises = [];
-        _.each(result.rows, function (user) {
-          //todo acá falta filtrar por la localización
-          var promise = that.populateUserInterests(user).then(function (data) {
-            jsonObject.users.push(that.createUserFromResult(data, true));
-          });
-          promises.push(promise);
-        });
+      	done();
+      	if (!result.rowCount) {
+      		that.getProfile(alias, function (err, result) {
+      			if (err) {
+      				return next(err);
+      			}
+      			if (_.isEmpty(result)) {
+      				return next({message: "Username not found"});
+      			}
+      		});
+      	} else {
+	        var jsonObject = {"users": [], metadata: {version: 0.1}};
+	        var promises = [];
+	        _.each(result.rows, function (user) {
+	          //todo acá falta filtrar por la localización
+	          var promise = that.populateUserInterests(user).then(function (data) {
+	            jsonObject.users.push(that.createUserFromResult(data, true));
+	          });
+	          promises.push(promise);
+	        });
 
-        Q.all(promises).then(function () {
-          jsonObject.metadata.count = jsonObject.users.length;
-          next(null, jsonObject);
-        }).fail(function (err) {
-          next(err, null);
-        });
-        ;
+	        Q.all(promises).then(function () {
+	          jsonObject.metadata.count = jsonObject.users.length;
+	          next(null, jsonObject);
+	        }).fail(function (err) {
+	          next(err, null);
+	        });
+        }
       });
     });
   });
