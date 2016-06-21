@@ -4,6 +4,7 @@ var pg = require('pg');
 var _ = require('underscore');
 var utils = require('../utils');
 var config = require('../config');
+var geolib = require('geolib');
 
 function UserService() {
 
@@ -207,11 +208,10 @@ UserService.prototype.getProfile = function (alias, next) {
   });
 };
 
-UserService.prototype.getCandidates = function (alias, next) {
+UserService.prototype.getCandidates = function (alias, location, radius, next) {
   var that = this;
   pg.connect(config.DATABASE_URL, function (err, client, done) {
-
-    var query = client.query("SELECT DISTINCT u.id, name, alias, email, gender, age, photo_profile FROM userinterests iu, users u" +
+    var query = client.query("SELECT DISTINCT u.id, name, alias, email, gender, age, photo_profile, latitude, longitude FROM userinterests iu, users u" +
     " WHERE u.alias <> ($1)" +
     " AND iu.userid = u.id" +
     " AND iu.interestid" +
@@ -239,18 +239,19 @@ UserService.prototype.getCandidates = function (alias, next) {
 	        var jsonObject = {"users": [], metadata: {version: 0.1}};
 	        var promises = [];
 	        _.each(result.rows, function (user) {
-	          //todo acá falta filtrar por la localización
-	          var promise = that.populateUserInterests(user).then(function (data) {
-	            jsonObject.users.push(that.createUserFromResult(data, true));
-	          });
-	          promises.push(promise);
+	        	var aLocation = {latitude: user.latitude, longitude: user.longitude};
+	        	if (geolib.isPointInCircle(aLocation, location, radius * 1000)) {
+	        		var promise = that.populateUserInterests(user).then(function (data) {
+	        			jsonObject.users.push(that.createUserFromResult(data, true));
+	        		});
+	        		promises.push(promise);
+	        	}
 	        });
-
 	        Q.all(promises).then(function () {
-	          jsonObject.metadata.count = jsonObject.users.length;
-	          next(null, jsonObject);
+	        	jsonObject.metadata.count = jsonObject.users.length;
+	        	next(null, jsonObject);
 	        }).fail(function (err) {
-	          next(err, null);
+	        	next(err, null);
 	        });
         }
       });

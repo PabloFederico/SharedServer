@@ -11,6 +11,7 @@
     "chai": "^3.5.0",
     "ejs": "2.3.3",
     "express": "4.13.3",
+    "geolib": "^2.0.21",
     "method-override": "^2.3.5",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",

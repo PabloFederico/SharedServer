@@ -74,13 +74,17 @@ exports.getProfile = function (request, response) {
 };
 
 exports.getCandidates = function (request, response) {
-  userService.getCandidates(request.params.user, function (err, result) {
-    if (err) {
-      var message = err.message ? err.message : "An error ocurred processing the request";
-      return response.status(400).json({error: message});
-    }
-    return response.status(200).json(result);
-  });
+    var location = {
+      latitude: request.query.latitude,
+      longitude: request.query.longitude
+    };
+    userService.getCandidates(request.params.user, location, request.query.radius, function (err, result) {
+      if (err) {
+        var message = err.message ? err.message : "An error ocurred processing the request";
+        return response.status(400).json({error: message});
+      }
+      return response.status(200).json(result);
+    });
 };
 
 exports.form_newUser = function (request, response) {
