@@ -11,11 +11,12 @@ function UserService() {
 
     var user = {
       id: data.id,
+      age: data.age,
       name: data.name,
       alias: data.alias,
       email: data.email,
       gender: data.gender,
-      age: data.age,
+      photo_profile: 'users/' + data.id + '/photo',
       interests: data.interests,
       location: {
         latitude: data.latitude,
@@ -172,6 +173,20 @@ UserService.prototype.getAll = function (next) {
         next(err, null);
       });
       ;
+    });
+  });
+};
+
+UserService.prototype.getProfilePhoto = function (userId, next) {
+  pg.connect(config.DATABASE_URL, function (err, client, done) {
+    client.query("SELECT * FROM users WHERE id = ($1)", [userId], function (err, result) {
+      done();
+      if (err) {
+        console.log(err);
+        next(err);
+      } else {
+        next(null, {photo_profile: encodeURI(result.rows[0].photo_profile.toString())});
+      }
     });
   });
 };

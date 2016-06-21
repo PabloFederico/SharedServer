@@ -55,6 +55,15 @@ exports.getAll = function (request, response) {
   });
 };
 
+exports.getProfilePhoto = function (request, response) {
+  userService.getProfilePhoto(request.params.id, function (err, result) {
+    if (err) {
+      return response.status(500).json({error: "An error ocurred processing the request"});
+    }
+    return response.status(200).json(result);
+  });
+};
+
 exports.getProfile = function (request, response) {
   userService.getProfile(request.params.user, function (err, result) {
     if (err) {
