@@ -99,7 +99,7 @@ UserService.prototype.get = function (userId, next) {
           next(err, null);
         });
       } else {
-      	next({message: "User not found in the database"});
+        next({message: "User not found in the database"});
       }
     });
   });
@@ -175,7 +175,6 @@ UserService.prototype.getAll = function (next) {
       }).fail(function (err) {
         next(err, null);
       });
-      ;
     });
   });
 };
@@ -202,7 +201,12 @@ UserService.prototype.getProfile = function (alias, next) {
         console.log(err);
         next(err);
       } else {
-        next(null, result.rows[0]);
+
+        var user = result.rows[0];
+        //Return photo profile as base64 string instead bytea default
+        user.photo_profile = encodeURI(user.photo_profile.toString());
+
+        next(null, user);
       }
     });
   });
@@ -225,34 +229,34 @@ UserService.prototype.getCandidates = function (alias, location, radius, next) {
 
       // After all data is returned, close connection and return results
       query.on('end', function (result) {
-      	done();
-      	if (!result.rowCount) {
-      		that.getProfile(alias, function (err, result) {
-      			if (err) {
-      				return next(err);
-      			}
-      			if (_.isEmpty(result)) {
-      				return next({message: "Username not found"});
-      			}
-      		});
-      	} else {
-	        var jsonObject = {"users": [], metadata: {version: 0.1}};
-	        var promises = [];
-	        _.each(result.rows, function (user) {
-	        	var aLocation = {latitude: user.latitude, longitude: user.longitude};
-	        	if (geolib.isPointInCircle(aLocation, location, radius * 1000)) {
-	        		var promise = that.populateUserInterests(user).then(function (data) {
-	        			jsonObject.users.push(that.createUserFromResult(data, true));
-	        		});
-	        		promises.push(promise);
-	        	}
-	        });
-	        Q.all(promises).then(function () {
-	        	jsonObject.metadata.count = jsonObject.users.length;
-	        	next(null, jsonObject);
-	        }).fail(function (err) {
-	        	next(err, null);
-	        });
+        done();
+        if (!result.rowCount) {
+          that.getProfile(alias, function (err, result) {
+            if (err) {
+              return next(err);
+            }
+            if (_.isEmpty(result)) {
+              return next({message: "Username not found"});
+            }
+          });
+        } else {
+          var jsonObject = {"users": [], metadata: {version: 0.1}};
+          var promises = [];
+          _.each(result.rows, function (user) {
+            var aLocation = {latitude: user.latitude, longitude: user.longitude};
+            if (geolib.isPointInCircle(aLocation, location, radius * 1000)) {
+              var promise = that.populateUserInterests(user).then(function (data) {
+                jsonObject.users.push(that.createUserFromResult(data, true));
+              });
+              promises.push(promise);
+            }
+          });
+          Q.all(promises).then(function () {
+            jsonObject.metadata.count = jsonObject.users.length;
+            next(null, jsonObject);
+          }).fail(function (err) {
+            next(err, null);
+          });
         }
       });
     });
