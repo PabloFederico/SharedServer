@@ -41,6 +41,7 @@ pg.defaults.ssl = true;
 pg.connect(config.DATABASE_URL, function (err, client, done) {
   if (err)
     throw err;
+
   client.query('CREATE TABLE IF NOT EXISTS' +
   ' users(id SERIAL PRIMARY KEY,' +
   ' name VARCHAR(30),' +
