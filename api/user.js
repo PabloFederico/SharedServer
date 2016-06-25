@@ -67,24 +67,28 @@ exports.getProfilePhoto = function (request, response) {
 exports.getProfile = function (request, response) {
   userService.getProfile(request.params.user, function (err, result) {
     if (err) {
-      return response.status(500).json({error: "An error ocurred processing the request"});
+      if (err.message) {
+        return response.status(400).json({error: err.message});
+      } else {
+        return response.status(500).json({error: "An error ocurred processing the request"});
+      }
     }
     return response.status(200).json(result);
   });
 };
 
 exports.getCandidates = function (request, response) {
-    var location = {
-      latitude: request.query.latitude,
-      longitude: request.query.longitude
-    };
-    userService.getCandidates(request.params.user, location, request.query.radius, function (err, result) {
-      if (err) {
-        var message = err.message ? err.message : "An error ocurred processing the request";
-        return response.status(400).json({error: message});
-      }
-      return response.status(200).json(result);
-    });
+  var location = {
+    latitude: request.query.latitude,
+    longitude: request.query.longitude
+  };
+  userService.getCandidates(request.params.user, location, request.query.radius, function (err, result) {
+    if (err) {
+      var message = err.message ? err.message : "An error ocurred processing the request";
+      return response.status(400).json({error: message});
+    }
+    return response.status(200).json(result);
+  });
 };
 
 exports.form_newUser = function (request, response) {

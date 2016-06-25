@@ -45,7 +45,7 @@ pg.connect(config.DATABASE_URL, function (err, client, done) {
   client.query('CREATE TABLE IF NOT EXISTS' +
   ' users(id SERIAL PRIMARY KEY,' +
   ' name VARCHAR(30),' +
-  ' alias VARCHAR(20),' +
+  ' alias VARCHAR(30),' +
   ' password VARCHAR(300),' +
   ' email VARCHAR(30),' +
   ' gender VARCHAR(1),' +

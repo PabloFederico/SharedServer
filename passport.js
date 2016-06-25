@@ -9,38 +9,40 @@ exports = module.exports = function (app, passport) {
   var LocalStrategy = require('passport-local').Strategy;
 
   passport.use(new LocalStrategy(
-    function (username, password, done) {
-      pg.connect(config.DATABASE_URL, function (err, client, pgDone) {
-        client.query("SELECT * FROM users" +
-          " WHERE alias = ($1)", [username], function (err, result) {
-          pgDone();
-          
-          if (err) {
+  function (username, password, done) {
+    pg.connect(config.DATABASE_URL, function (err, client, pgDone) {
+      client.query("SELECT * FROM users" +
+      " WHERE alias = ($1)", [username], function (err, result) {
+        pgDone();
 
-            return done(err);
-          }
+        if (err) {
 
-          if (!result.rowCount) {
-            return done(null, false, {message: 'Unknown user'});
-          }
+          return done(err);
+        }
 
-          var user = result.rows[0];
-          if (user.password !== utils.encryptPassword(password)) {
-            return done(null, false, {message: 'Invalid password'});
-          }
+        if (!result.rowCount) {
+          return done(null, false, {message: 'Unknown user'});
+        }
 
-          //Avoid return encoded password
-          delete(user.password);
-          
-          //Return photo profile as base64 string instead bytea default
+        var user = result.rows[0];
+        if (user.password !== utils.encryptPassword(password)) {
+          return done(null, false, {message: 'Invalid password'});
+        }
+
+        //Avoid return encoded password
+        delete(user.password);
+
+        //Return photo profile as base64 string instead bytea default
+        if (user.photo_profile) {
           user.photo_profile = encodeURI(user.photo_profile.toString());
+        }
 
-          userService.populateUserInterests(user).then(function (data) {
-            return done(null, user);
-          });
+        userService.populateUserInterests(user).then(function (data) {
+          return done(null, user);
         });
       });
-    }
+    });
+  }
   ));
 
   passport.serializeUser(function (user, done) {

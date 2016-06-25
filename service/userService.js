@@ -197,15 +197,19 @@ UserService.prototype.getProfile = function (alias, next) {
   pg.connect(config.DATABASE_URL, function (err, client, done) {
     client.query("SELECT * FROM users WHERE alias = ($1)", [alias], function (err, result) {
       done();
+
       if (err) {
         console.log(err);
         next(err);
+      } else if (!result.rowCount) {
+        next({message: "No profile found for alias: " + alias});
       } else {
 
         var user = result.rows[0];
         //Return photo profile as base64 string instead bytea default
-        user.photo_profile = encodeURI(user.photo_profile.toString());
-
+        if (user.photo_profile) {
+          user.photo_profile = encodeURI(user.photo_profile.toString());
+        }
         next(null, user);
       }
     });
