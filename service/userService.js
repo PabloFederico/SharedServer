@@ -234,17 +234,10 @@ UserService.prototype.getCandidates = function (alias, location, radius, next) {
       // After all data is returned, close connection and return results
       query.on('end', function (result) {
         done();
+        var jsonObject = {"users": [], metadata: {version: 0.1, count: 0}};
         if (!result.rowCount) {
-          that.getProfile(alias, function (err, result) {
-            if (err) {
-              return next(err);
-            }
-            if (_.isEmpty(result)) {
-              return next({message: "Username not found"});
-            }
-          });
+          next(null, jsonObject);
         } else {
-          var jsonObject = {"users": [], metadata: {version: 0.1}};
           var promises = [];
           _.each(result.rows, function (user) {
             var aLocation = {latitude: user.latitude, longitude: user.longitude};
